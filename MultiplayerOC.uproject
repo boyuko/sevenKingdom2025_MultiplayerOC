@@ -47,6 +47,10 @@
 				"Win64",
 				"Android"
 			]
+		},
+		{
+			"Name": "LiveLinkFreeD",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
