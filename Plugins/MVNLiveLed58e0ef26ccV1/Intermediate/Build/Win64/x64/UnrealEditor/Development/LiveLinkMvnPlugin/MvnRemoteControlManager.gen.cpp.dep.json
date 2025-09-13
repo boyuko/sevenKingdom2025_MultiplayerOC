@@ -1,0 +1,23 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugin\\uht\\mvnremotecontrolmanager.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\livelinkmvnplugin\\definitions.livelinkmvnplugin.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\source\\livelinkmvnplugin\\public\\mvnremotecontrolmanager.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messagingcommon\\public\\messageendpoint.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\core\\public\\containers\\arraybuilder.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessageattachment.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagebus.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagehandler.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagereceiver.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagesender.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagebuslistener.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugin\\uht\\mvnremotecontrolmanager.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

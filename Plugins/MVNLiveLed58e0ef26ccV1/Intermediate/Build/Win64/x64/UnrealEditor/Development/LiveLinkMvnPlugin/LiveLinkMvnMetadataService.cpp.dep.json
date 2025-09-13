@@ -1,0 +1,18 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\source\\livelinkmvnplugin\\private\\livelinkmvnmetadataservice.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\livelinkmvnplugin\\definitions.livelinkmvnplugin.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\source\\livelinkmvnplugin\\public\\livelinkmvnmetadataservice.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinktypes.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinkrefskeleton.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinkrefskeleton.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinktypes.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

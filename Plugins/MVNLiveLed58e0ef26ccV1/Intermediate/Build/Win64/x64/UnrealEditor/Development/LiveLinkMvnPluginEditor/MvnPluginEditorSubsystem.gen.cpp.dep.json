@@ -1,0 +1,17 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugineditor\\uht\\mvnplugineditorsubsystem.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\livelinkmvnplugineditor\\definitions.livelinkmvnplugineditor.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\source\\livelinkmvnplugineditor\\private\\mvnplugineditorsubsystem.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\editor\\unrealed\\public\\subsystems\\unrealeditorsubsystem.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealed\\uht\\unrealeditorsubsystem.generated.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugineditor\\uht\\mvnplugineditorsubsystem.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

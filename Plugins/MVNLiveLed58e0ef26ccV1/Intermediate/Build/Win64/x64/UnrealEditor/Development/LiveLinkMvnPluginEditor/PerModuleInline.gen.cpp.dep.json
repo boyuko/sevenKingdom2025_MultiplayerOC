@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\livelinkmvnplugineditor\\permoduleinline.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\livelinkmvnplugineditor\\definitions.livelinkmvnplugineditor.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\core\\public\\hal\\permoduleinline.inl"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\source\\livelinkmvnplugin\\private\\mvnlivelinkpresencedetector.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\livelinkmvnplugin\\definitions.livelinkmvnplugin.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\source\\livelinkmvnplugin\\public\\mvnlivelinkpresencedetector.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\plugins\\animation\\livelink\\source\\livelink\\public\\livelinkmessagebusfinder.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\plugins\\animation\\livelink\\intermediate\\build\\win64\\unrealeditor\\inc\\livelink\\uht\\livelinkmessagebusfinder.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkmessagebusframework\\public\\livelinkmessages.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinkrefskeleton.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinkrefskeleton.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinktypes.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinktypes.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmessagebusframework\\uht\\livelinkmessages.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messagingcommon\\public\\messageendpointbuilder.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagebus.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagehandler.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagingmodule.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messagingcommon\\public\\messageendpoint.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\core\\public\\containers\\arraybuilder.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessageattachment.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagereceiver.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagesender.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messaging\\public\\imessagebuslistener.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\messagingcommon\\public\\messagehandlers.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\plugins\\animation\\livelink\\source\\livelink\\public\\livelinksettings.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\plugins\\animation\\livelink\\intermediate\\build\\win64\\unrealeditor\\inc\\livelink\\uht\\livelinksettings.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\ilivelinkclient.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinkrole.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinkrole.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinkpresettypes.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinkpresettypes.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\ilivelinkclient.generated.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\source\\livelinkmvnplugin\\public\\mvnlivelinkmessages.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\mvnliveled58e0ef26ccv1\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugin\\uht\\mvnlivelinkmessages.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
