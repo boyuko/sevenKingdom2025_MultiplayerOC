@@ -51,6 +51,14 @@
 		{
 			"Name": "LiveLinkFreeD",
 			"Enabled": true
+		},
+		{
+			"Name": "OSC",
+			"Enabled": true
+		},
+		{
+			"Name": "LiveLinkVRPN",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
