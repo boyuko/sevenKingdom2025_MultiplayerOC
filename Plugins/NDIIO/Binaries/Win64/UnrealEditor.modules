@@ -1,0 +1,9 @@
+{
+	"BuildId": "83cab8a8-efa1-43c9-a183-b70b84d8f4e0",
+	"Modules": 
+	{
+		"NDIIO": "UnrealEditor-NDIIO.dll",
+		"NDIIOEditor": "UnrealEditor-NDIIOEditor.dll",
+		"NDIIOShaders": "UnrealEditor-NDIIOShaders.dll"
+	}
+}

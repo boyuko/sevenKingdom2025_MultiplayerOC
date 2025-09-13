@@ -1,0 +1,17 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\ndiio\\intermediate\\build\\win64\\unrealeditor\\inc\\ndiio\\uht\\ndimediasoundwave.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\ndiio\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\ndiio\\definitions.ndiio.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\ndiio\\source\\core\\public\\objects\\media\\ndimediasoundwave.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\engine\\classes\\sound\\soundwaveprocedural.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\soundwaveprocedural.generated.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\ndiio\\intermediate\\build\\win64\\unrealeditor\\inc\\ndiio\\uht\\ndimediasoundwave.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
