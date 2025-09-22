@@ -1,5 +1,10 @@
 {
 	"RemapUnityFiles": 
 	{
+		"Module.XSensLLWrapper.cpp.obj": [
+			"PerModuleInline.gen.cpp.obj",
+			"MvnWrapper.cpp.obj",
+			"XSensLLWrapper.cpp.obj"
+		]
 	}
 }

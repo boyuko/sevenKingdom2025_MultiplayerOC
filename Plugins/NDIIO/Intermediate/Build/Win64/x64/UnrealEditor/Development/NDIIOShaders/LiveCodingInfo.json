@@ -1,5 +1,9 @@
 {
 	"RemapUnityFiles": 
 	{
+		"Module.NDIIOShaders.cpp.obj": [
+			"PerModuleInline.gen.cpp.obj",
+			"NDIShaders.cpp.obj"
+		]
 	}
 }

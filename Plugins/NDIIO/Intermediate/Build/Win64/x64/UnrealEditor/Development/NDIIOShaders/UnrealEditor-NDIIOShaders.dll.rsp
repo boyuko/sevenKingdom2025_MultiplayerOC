@@ -38,8 +38,7 @@
 /NOIMPLIB
 /NATVIS:"..\Intermediate\Build\Win64\x64\UnrealEditor\Development\RenderCore\RenderCore.natvis"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.InclOrderUnreal5_3.h.obj"
-"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\NDIIO\Intermediate\Build\Win64\x64\UnrealEditor\Development\NDIIOShaders\NDIShaders.cpp.obj"
-"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\NDIIO\Intermediate\Build\Win64\x64\UnrealEditor\Development\NDIIOShaders\PerModuleInline.gen.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\NDIIO\Intermediate\Build\Win64\x64\UnrealEditor\Development\NDIIOShaders\Module.NDIIOShaders.cpp.obj"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Default.rc2.res"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Renderer\UnrealEditor-Renderer.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\RenderCore\UnrealEditor-RenderCore.lib"
