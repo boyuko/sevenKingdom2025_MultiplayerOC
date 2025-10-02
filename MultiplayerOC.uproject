@@ -62,6 +62,10 @@
 		{
 			"Name": "LiveLinkVRPN",
 			"Enabled": true
+		},
+		{
+			"Name": "AndroidCamera2Plugin",
+			"Enabled": false
 		}
 	],
 	"TargetPlatforms": [
