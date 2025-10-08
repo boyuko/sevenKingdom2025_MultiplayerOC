@@ -234,7 +234,9 @@ void MvnRemoteControlSession::Stop()
 
 bool MvnRemoteControlSession::SendCommand( MvnRemoteControlMessage* _pMessage, const FInternetAddr& Destination )
 {
-    const char* pcText = TCHAR_TO_UTF8( *_pMessage->m_strXml );
+    //const char* pcText = TCHAR_TO_UTF8( *_pMessage->m_strXml );
+    FTCHARToUTF8 Convert(*_pMessage->m_strXml);
+    const char* pcText = Convert.Get();
     if ( !m_pSocket )
     {
         return false;

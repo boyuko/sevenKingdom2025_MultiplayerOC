@@ -16,10 +16,25 @@
 #include <LiveLinkMessages.h>
 #include "MvnLiveLinkMessages.h"
 #include "Features/IModularFeatures.h"
-#include <ws2tcpip.h>
+#include "HAL/RunnableThread.h"
 
+#if PLATFORM_WINDOWS
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#elif PLATFORM_ANDROID
+#include <sys/socket.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#ifndef NI_MAXHOST
+#define NI_MAXHOST 1025
+#endif
+#endif
+
+
+// 定義靜態成員（放在 includes 之後，任何函式之前）
 MvnWrapper* MvnWrapper::s_MvnWrapperPtr = nullptr;
 FRunnableThread* MvnWrapper::s_Thread = nullptr;
+
 
 MvnWrapper::MvnWrapper()
 {
@@ -187,7 +202,9 @@ FString MvnWrapper::DecipherSubjectName(const FArrayReaderPtr& ArrayReaderPtr)
 
 FString GetHostnameFromIP(TSharedPtr<FInternetAddr> InternetAddress)
 {
-	const char* ip_address = TCHAR_TO_UTF8(*(InternetAddress->ToString(false))); // Replace with the actual IP address
+	//const char* ip_address = TCHAR_TO_UTF8(*(InternetAddress->ToString(false))); // Replace with the actual IP address
+	FTCHARToUTF8 utf8Address(*(InternetAddress->ToString(false)));
+	const char* ip_address = utf8Address.Get();
 
 	struct sockaddr_in sa;
 	sa.sin_family = AF_INET;
