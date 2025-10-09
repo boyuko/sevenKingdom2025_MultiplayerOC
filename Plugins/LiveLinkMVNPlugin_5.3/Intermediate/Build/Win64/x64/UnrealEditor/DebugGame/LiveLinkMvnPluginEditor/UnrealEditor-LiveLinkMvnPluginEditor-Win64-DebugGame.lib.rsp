@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-LiveLinkMvnPluginEditor-Win64-DebugGame.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"D:\UE\Work\senvenKindom2025\Intermediate\Build\Win64\x64\senvenKindom2025Editor\DebugGame\UnrealEd\SharedPCH.UnrealEd.NonOptimized.Cpp20.InclOrderUnreal5_0.h.obj"
+"D:\UE\Work\senvenKindom2025\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\LiveLinkMvnPluginEditor\Module.LiveLinkMvnPluginEditor.cpp.obj"
+"D:\UE\Work\senvenKindom2025\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\LiveLinkMvnPluginEditor\Default.rc2.res"
+/OUT:"D:\UE\Work\senvenKindom2025\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\LiveLinkMvnPluginEditor\UnrealEditor-LiveLinkMvnPluginEditor-Win64-DebugGame.lib"

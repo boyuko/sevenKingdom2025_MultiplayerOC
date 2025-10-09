@@ -1,0 +1,23 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkmvnplugin\\uht\\livelinkmvnretargetasset.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\ue\\work\\senvenkindom2025\\intermediate\\build\\win64\\x64\\senvenkindom2025\\development\\engine\\sharedpch.engine.cpp20.inclorderunreal5_0.h.pch",
+        "Includes": [
+            "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\x64\\unrealgame\\development\\livelinkmvnplugin\\definitions.livelinkmvnplugin.h",
+            "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\source\\livelinkmvnplugin\\public\\livelinkmvnretargetasset.h",
+            "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.36.32532\\include\\map",
+            "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.36.32532\\include\\xtree",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\livelinkanimationcore\\public\\livelinkremapasset.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\livelinkanimationcore\\public\\livelinkretargetasset.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkanimationcore\\uht\\livelinkretargetasset.generated.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkanimationcore\\uht\\livelinkremapasset.generated.h",
+            "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\source\\livelinkmvnplugin\\public\\xsensmappingenum.h",
+            "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkmvnplugin\\uht\\xsensmappingenum.generated.h",
+            "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkmvnplugin\\uht\\livelinkmvnretargetasset.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

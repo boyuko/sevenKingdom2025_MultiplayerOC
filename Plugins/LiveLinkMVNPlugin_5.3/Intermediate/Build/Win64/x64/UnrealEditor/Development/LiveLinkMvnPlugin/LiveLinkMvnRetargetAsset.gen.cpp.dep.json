@@ -1,0 +1,23 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugin\\uht\\livelinkmvnretargetasset.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\livelinkmvnplugin\\definitions.livelinkmvnplugin.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\source\\livelinkmvnplugin\\public\\livelinkmvnretargetasset.h",
+            "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\map",
+            "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\xtree",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkanimationcore\\public\\livelinkremapasset.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkanimationcore\\public\\livelinkretargetasset.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkanimationcore\\uht\\livelinkretargetasset.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkanimationcore\\uht\\livelinkremapasset.generated.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\source\\livelinkmvnplugin\\public\\xsensmappingenum.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugin\\uht\\xsensmappingenum.generated.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugin\\uht\\livelinkmvnretargetasset.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugineditor\\uht\\livelinkmvnsourcefactory.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\livelinkmvnplugineditor\\definitions.livelinkmvnplugineditor.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\source\\livelinkmvnplugineditor\\private\\livelinkmvnsourcefactory.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinksourcefactory.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinksourcefactory.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkmessagebusframework\\public\\livelinkmessages.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinkrefskeleton.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinkrefskeleton.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinktypes.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkinterface\\uht\\livelinktypes.generated.h",
+            "c:\\program files\\epic games\\ueoc_5.5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmessagebusframework\\uht\\livelinkmessages.generated.h",
+            "d:\\work\\2025kingdom\\ue\\multiplayeroc\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealeditor\\inc\\livelinkmvnplugineditor\\uht\\livelinkmvnsourcefactory.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

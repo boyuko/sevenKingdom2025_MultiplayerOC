@@ -1,0 +1,8 @@
+{
+	"BuildId": "27405482",
+	"Modules": 
+	{
+		"LiveLinkMvnPlugin": "UnrealEditor-LiveLinkMvnPlugin-Win64-DebugGame.dll",
+		"LiveLinkMvnPluginEditor": "UnrealEditor-LiveLinkMvnPluginEditor-Win64-DebugGame.dll"
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.LiveLinkMvnPlugin.cpp.obj": [
+			"LiveLinkGameInstance.gen.cpp.obj",
+			"LiveLinkMvnPlugin.init.gen.cpp.obj",
+			"LiveLinkMvnRetargetAsset.gen.cpp.obj",
+			"LiveLinkMvnSource.gen.cpp.obj",
+			"LiveLinkMvnTransformController.gen.cpp.obj",
+			"MvnRemoteControlManager.gen.cpp.obj",
+			"XsensMappingEnum.gen.cpp.obj",
+			"Datagram.cpp.obj",
+			"LiveLinkGameInstance.cpp.obj",
+			"LiveLinkMvnMetadataService.cpp.obj",
+			"LiveLinkMvnPlugin.cpp.obj",
+			"LiveLinkMvnRetargetAsset.cpp.obj",
+			"LiveLinkMvnSource.cpp.obj",
+			"LiveLinkMvnTransformController.cpp.obj",
+			"MetaDatagram.cpp.obj",
+			"MvnRemoteControlManager.cpp.obj",
+			"MvnRemoteControlSession.cpp.obj",
+			"MvnRemoteControlSessionUtil.cpp.obj",
+			"ParserManager.cpp.obj",
+			"QuaternionDatagram.cpp.obj",
+			"ScaleDatagram.cpp.obj",
+			"Streamer.cpp.obj"
+		]
+	}
+}

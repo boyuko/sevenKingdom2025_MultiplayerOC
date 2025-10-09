@@ -1,0 +1,26 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkmvnplugin\\uht\\livelinkmvntransformcontroller.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\ue\\work\\senvenkindom2025\\intermediate\\build\\win64\\x64\\senvenkindom2025\\development\\engine\\sharedpch.engine.cpp20.inclorderunreal5_0.h.pch",
+        "Includes": [
+            "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\x64\\unrealgame\\development\\livelinkmvnplugin\\definitions.livelinkmvnplugin.h",
+            "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\source\\livelinkmvnplugin\\public\\livelinkmvntransformcontroller.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\plugins\\animation\\livelink\\source\\livelinkcomponents\\public\\livelinkcontrollerbase.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinkrole.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinktypes.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinkrefskeleton.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkinterface\\uht\\livelinkrefskeleton.generated.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkinterface\\uht\\livelinktypes.generated.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkinterface\\uht\\livelinkrole.generated.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\plugins\\animation\\livelink\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkcomponents\\uht\\livelinkcontrollerbase.generated.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\livelinkinterface\\public\\ilivelinkclient.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\livelinkinterface\\public\\livelinkpresettypes.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkinterface\\uht\\livelinkpresettypes.generated.h",
+            "d:\\ue\\work\\senvenkindom2025\\plugins\\livelinkmvnplugin_5.3\\intermediate\\build\\win64\\unrealgame\\inc\\livelinkmvnplugin\\uht\\livelinkmvntransformcontroller.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
