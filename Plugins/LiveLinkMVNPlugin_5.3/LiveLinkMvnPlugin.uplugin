@@ -19,9 +19,13 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"PlatformAllowList": [
+<<<<<<< HEAD:Plugins/LiveLinkMVNPlugin_5.3/LiveLinkMvnPlugin.uplugin
 				"Win64",
 				"Android"
 
+=======
+				"Win64"
+>>>>>>> 7ee7e240df184f6d72bef9efedd4aa8e92b9878a:Plugins/MVNLiveLed58e0ef26ccV1/LiveLinkMvnPlugin.uplugin
 			]
 		},
 		{
@@ -29,9 +33,21 @@
 			"Type": "Editor",
 			"LoadingPhase": "PreDefault",
 			"PlatformAllowList": [
+<<<<<<< HEAD:Plugins/LiveLinkMVNPlugin_5.3/LiveLinkMvnPlugin.uplugin
 				"Win64",
 				"Android"
 
+=======
+				"Win64"
+			]
+		},
+		{
+			"Name": "XSensLLWrapper",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64"
+>>>>>>> 7ee7e240df184f6d72bef9efedd4aa8e92b9878a:Plugins/MVNLiveLed58e0ef26ccV1/LiveLinkMvnPlugin.uplugin
 			]
 		}
 	],

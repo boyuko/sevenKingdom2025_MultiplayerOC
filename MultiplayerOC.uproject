@@ -62,6 +62,7 @@
 		{
 			"Name": "LiveLinkVRPN",
 			"Enabled": true
+<<<<<<< HEAD
 		},
 		{
 			"Name": "AndroidCamera2Plugin",
@@ -75,6 +76,8 @@
 		{
 			"Name": "CineCameraSceneCapture",
 			"Enabled": true
+=======
+>>>>>>> 7ee7e240df184f6d72bef9efedd4aa8e92b9878a
 		}
 	],
 	"TargetPlatforms": [
