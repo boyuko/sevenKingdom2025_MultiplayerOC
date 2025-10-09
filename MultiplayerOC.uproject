@@ -66,6 +66,15 @@
 		{
 			"Name": "AndroidCamera2Plugin",
 			"Enabled": false
+		},
+		{
+			"Name": "LiveLinkMvnPlugin",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/8665afd60be74d39a08f1410c3dc333b"
+		},
+		{
+			"Name": "CineCameraSceneCapture",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
