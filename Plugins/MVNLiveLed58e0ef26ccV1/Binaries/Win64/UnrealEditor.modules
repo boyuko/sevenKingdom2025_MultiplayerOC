@@ -1,9 +1,0 @@
-{
-	"BuildId": "1a730d6c-afa0-4e56-974c-ddae4949aec2",
-	"Modules": 
-	{
-		"LiveLinkMvnPlugin": "UnrealEditor-LiveLinkMvnPlugin.dll",
-		"LiveLinkMvnPluginEditor": "UnrealEditor-LiveLinkMvnPluginEditor.dll",
-		"XSensLLWrapper": "UnrealEditor-XSensLLWrapper.dll"
-	}
-}
