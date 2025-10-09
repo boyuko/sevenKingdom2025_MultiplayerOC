@@ -82,7 +82,8 @@ private:
 
             if ( strKey == "Result" )
             {
-                if ( strValue.Compare( L"true", ESearchCase::IgnoreCase ) == 0 )
+                //if ( strValue.Compare( L"true", ESearchCase::IgnoreCase ) == 0 )
+                if (strValue.Compare(TEXT("true"), ESearchCase::IgnoreCase) == 0)
                 {
                     m_pMessage->m_bResult = true;
                 }

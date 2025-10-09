@@ -62,7 +62,6 @@
 		{
 			"Name": "LiveLinkVRPN",
 			"Enabled": true
-<<<<<<< HEAD
 		},
 		{
 			"Name": "LiveLinkMvnPlugin",
@@ -72,8 +71,6 @@
 		{
 			"Name": "CineCameraSceneCapture",
 			"Enabled": true
-=======
->>>>>>> 7ee7e240df184f6d72bef9efedd4aa8e92b9878a
 		}
 	],
 	"TargetPlatforms": [

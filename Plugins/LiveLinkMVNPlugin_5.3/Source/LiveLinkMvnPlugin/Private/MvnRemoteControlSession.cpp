@@ -227,17 +227,12 @@ void MvnRemoteControlSession::Stop()
 
 bool MvnRemoteControlSession::SendCommand( MvnRemoteControlMessage* _pMessage, const FInternetAddr& Destination )
 {
-<<<<<<< HEAD:Plugins/LiveLinkMVNPlugin_5.3/Source/LiveLinkMvnPlugin/Private/MvnRemoteControlSession.cpp
     // 原本
     // const char* pcText = TCHAR_TO_UTF8( *_pMessage->m_strXml );
 
     // 改成
     FTCHARToUTF8 Convert(*_pMessage->m_strXml);
     const char* pcText = Convert.Get();    if ( !m_pSocket )
-=======
-    const char* pcText = TCHAR_TO_UTF8( *_pMessage->m_strXml );
-    if ( !m_pSocket )
->>>>>>> 7ee7e240df184f6d72bef9efedd4aa8e92b9878a:Plugins/MVNLiveLed58e0ef26ccV1/Source/LiveLinkMvnPlugin/Private/MvnRemoteControlSession.cpp
     {
         return false;
     }
