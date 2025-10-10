@@ -1,21 +1,5 @@
 {
 	"RemapUnityFiles": 
 	{
-		"Module.LiveLinkMvnPluginEditor.cpp.obj": [
-			"LiveLinkMvnPluginEditor.init.gen.cpp.obj",
-			"LiveLinkMvnRetargetAssetFactory.gen.cpp.obj",
-			"LiveLinkMvnSourceFactory.gen.cpp.obj",
-			"LiveLinkMvnEditorUtilities.cpp.obj",
-			"LiveLinkMvnRetargetAssetCustomization.cpp.obj",
-			"SLiveLinkMvnSubjectRepresentationPicker.cpp.obj",
-			"XsensRemapAction.cpp.obj",
-			"LiveLinkMvnRetargetAssetFactory.cpp.obj",
-			"LiveLinkMvnEditorModule.cpp.obj",
-			"LiveLinkMvnSourceEditor.cpp.obj",
-			"LiveLinkMvnSourceFactory.cpp.obj",
-			"MvnRemoteControlClientPanel.cpp.obj",
-			"MvnRemoteControlNewSessionWidget.cpp.obj",
-			"MvnRemoteControlUtils.cpp.obj"
-		]
 	}
 }

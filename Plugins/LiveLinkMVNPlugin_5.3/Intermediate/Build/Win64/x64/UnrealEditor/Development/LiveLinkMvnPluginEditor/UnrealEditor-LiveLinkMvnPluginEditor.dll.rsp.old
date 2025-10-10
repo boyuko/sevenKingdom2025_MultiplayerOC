@@ -11,6 +11,7 @@
 /DELAY:UNLOAD
 /DLL
 /PDBALTPATH:%_PDB%
+/d2:-ExtendedWarningInfo
 /OPT:NOREF
 /OPT:NOICF
 /INCREMENTAL:NO
@@ -20,9 +21,9 @@
 /ALTERNATENAME:__imp___std_init_once_complete=__imp_InitOnceComplete
 /DELAYLOAD:"d3d12.dll"
 /DELAYLOAD:"DBGHELP.DLL"
-/LIBPATH:"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x64"
-/LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x64"
-/LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\um\x64"
+/LIBPATH:"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\lib\x64"
+/LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.22621.0\ucrt\x64"
+/LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.22621.0\um\x64"
 /NODEFAULTLIB:"LIBCMT"
 /NODEFAULTLIB:"LIBCPMT"
 /NODEFAULTLIB:"LIBCMTD"
@@ -34,9 +35,24 @@
 /NODEFAULTLIB:"LIBCD"
 /NODEFAULTLIB:"LIBCPD"
 /FUNCTIONPADMIN:6
-"D:\Work\2025Kingdom\UE\UE53XsensTest\Intermediate\Build\Win64\x64\UE53XsensTestEditor\Development\UnrealEd\SharedPCH.UnrealEd.Cpp20.InclOrderUnreal5_0.h.obj"
-"D:\Work\2025Kingdom\UE\UE53XsensTest\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\Module.LiveLinkMvnPluginEditor.cpp.obj"
-"D:\Work\2025Kingdom\UE\UE53XsensTest\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\Default.rc2.res"
+/NOIMPLIB
+"..\Intermediate\Build\Win64\x64\UnrealEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.InclOrderUnreal5_3.h.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnEditorModule.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnSourceEditor.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnSourceFactory.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnEditorUtilities.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnRetargetAssetCustomization.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\SLiveLinkMvnSubjectRepresentationPicker.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\XsensRemapAction.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnRetargetAssetFactory.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\MvnRemoteControlClientPanel.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\MvnRemoteControlNewSessionWidget.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\MvnRemoteControlUtils.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\PerModuleInline.gen.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnPluginEditor.init.gen.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnRetargetAssetFactory.gen.cpp.obj"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\LiveLinkMvnSourceFactory.gen.cpp.obj"
+"..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Default.rc2.res"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\CoreUObject\UnrealEditor-CoreUObject.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Engine\UnrealEditor-Engine.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Slate\UnrealEditor-Slate.lib"
@@ -54,7 +70,7 @@
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Projects\UnrealEditor-Projects.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Networking\UnrealEditor-Networking.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\DetailCustomizations\UnrealEditor-DetailCustomizations.lib"
-"D:\Work\2025Kingdom\UE\UE53XsensTest\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPlugin\UnrealEditor-LiveLinkMvnPlugin.lib"
+"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPlugin\UnrealEditor-LiveLinkMvnPlugin.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkInterface\UnrealEditor-LiveLinkInterface.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\BlueprintGraph\UnrealEditor-BlueprintGraph.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\AnimGraph\UnrealEditor-AnimGraph.lib"
@@ -84,7 +100,6 @@
 "synchronization.lib"
 "dwmapi.lib"
 "imm32.lib"
-/OUT:"D:\Work\2025Kingdom\UE\UE53XsensTest\Plugins\LiveLinkMVNPlugin_5.3\Binaries\Win64\UnrealEditor-LiveLinkMvnPluginEditor.dll"
-/IMPLIB:"D:\Work\2025Kingdom\UE\UE53XsensTest\Plugins\LiveLinkMVNPlugin_5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveLinkMvnPluginEditor\UnrealEditor-LiveLinkMvnPluginEditor.sup.lib"
-/PDB:"D:\Work\2025Kingdom\UE\UE53XsensTest\Plugins\LiveLinkMVNPlugin_5.3\Binaries\Win64\UnrealEditor-LiveLinkMvnPluginEditor.pdb"
+/OUT:"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Binaries\Win64\UnrealEditor-LiveLinkMvnPluginEditor.dll"
+/PDB:"D:\Work\2025Kingdom\UE\MultiplayerOC\Plugins\LiveLinkMVNPlugin_5.3\Binaries\Win64\UnrealEditor-LiveLinkMvnPluginEditor.pdb"
 /ignore:4078
