@@ -631,7 +631,7 @@ bool UMocapApp::HandleAvatarUpdateEvent(uint64 Avatarhandle)
     ReturnFalseIFError();
     if (Count > 0)
     {
-        TArray<uint64> JointsHandle;
+        TArray<MocapApi::MCPJointHandle_t> JointsHandle;
         JointsHandle.SetNum(Count);
         mcpError = avatarMgr->GetAvatarJoints(JointsHandle.GetData(), &Count, Avatarhandle);
         ReturnFalseIFError();
@@ -711,7 +711,7 @@ bool UMocapApp::HandleAvatarUpdateEvent(uint64 Avatarhandle)
     ReturnFalseIFError();
     if (rigidbodyCount > 0)
     {
-        TArray<uint64> rigidHandles;
+        TArray<MocapApi::MCPRigidBodyHandle_t> rigidHandles;
         rigidHandles.SetNum(rigidbodyCount);
         mcpError = avatarMgr->GetAvatarRigidBodies(rigidHandles.GetData(), &rigidbodyCount, Avatarhandle);
         ReturnFalseIFError();
@@ -747,7 +747,7 @@ void UMocapApp::CheckAvatarJoint(uint64 Avatarhandle, uint64 JointHandle, const 
     } \
 }
 #define CheckParent(A, B) { \
-    if (!A==B) { \
+    if (A!=B) { \
         UE_LOG(LogMocapApi, Error, TEXT("ParentCheck Failed %d : except %d got %d"), jointTag, A, B); \
     } \
 }
