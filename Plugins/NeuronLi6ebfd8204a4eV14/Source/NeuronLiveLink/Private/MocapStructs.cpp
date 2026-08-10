@@ -59,11 +59,13 @@ UMocapApp::UMocapApp()
             return CommandInterface->SetCommandExtraLong(MocapApi::CommandExtraLong_DeviceRadio, V, handle);
         };
         CommandParamBuildMap[EMCCommandParamName::ParamAvatarName] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
-            const char* V = FTCHARToUTF8(*Value).Get();
+            FTCHARToUTF8 UTF8Value(*Value);
+            const char* V = UTF8Value.Get();
             return CommandInterface->SetCommandExtraLong(MocapApi::CommandExtraLong_AvatarName, reinterpret_cast<intptr_t>(V), handle);
         };
         CommandParamBuildMap[EMCCommandParamName::ParamTakeName] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
-            const char* V = FTCHARToUTF8(*Value).Get();
+            FTCHARToUTF8 UTF8Value(*Value);
+            const char* V = UTF8Value.Get();
             return CommandInterface->SetCommandExtraLong(MocapApi::CommandExtraLong_Extra0, reinterpret_cast<intptr_t>(V), handle);
         };
         CommandParamBuildMap[EMCCommandParamName::ParamCalibrateMotionFlag] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
@@ -132,7 +134,8 @@ bool UMocapApp::Connect()
 // 	ReturnFalseIFError();
 
     bool isUDP = AppSettings.Protocol == EMCAppProtocol::UDP;
-    const char* IPAddress = FTCHARToUTF8(*AppSettings.RemoteIP).Get();
+    FTCHARToUTF8 UTF8IPAddress(*AppSettings.RemoteIP);
+    const char* IPAddress = UTF8IPAddress.Get();
     int Port = AppSettings.Port;
     int RecvPort = AppSettings.RecvPort;
     if (isUDP)
