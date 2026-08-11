@@ -1,5 +1,13 @@
 {
 	"RemapUnityFiles": 
 	{
+		"Module.NeuronLiveLinkEditor.cpp.obj": [
+			"NeuronBoneMappingWidget.cpp.obj",
+			"NeuronEditorWindowCommands.cpp.obj",
+			"NeuronEditorWindowStyle.cpp.obj",
+			"NeuronLiveLinkEditorModule.cpp.obj",
+			"NeuronLiveLinkRemapAssetDetailCustomization.cpp.obj",
+			"PerModuleInline.gen.cpp.obj"
+		]
 	}
 }

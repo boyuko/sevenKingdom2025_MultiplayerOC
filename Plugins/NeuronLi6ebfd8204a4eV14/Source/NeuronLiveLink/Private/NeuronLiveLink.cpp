@@ -17,19 +17,32 @@ void FNeuronLiveLinkModule::StartupModule()
 	FString LibraryPath;
 #if PLATFORM_WINDOWS
 	LibraryPath = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/MocapApi/bin/x64/MocapApi.dll"));
-#endif // PLATFORM_WINDOWS
+#elif PLATFORM_ANDROID
+	// On Android the .so is registered via PublicAdditionalLibraries in the .Build.cs,
+	// which means UBT links the main game .so directly against it (it ends up as a
+	// DT_NEEDED entry) and packages it into the APK's jniLibs folder. It is therefore
+	// already resident by the time this module starts up, so we just need a handle to
+	// it via its bare name rather than a full path.
+	LibraryPath = TEXT("libMocapApi.so");
+#endif
 
 	MocapApiLibraryHandle = !LibraryPath.IsEmpty() ? FPlatformProcess::GetDllHandle(*LibraryPath) : nullptr;
 
 	if (MocapApiLibraryHandle)
 	{
 		UE_LOG(LogTemp, Log, TEXT("MocapApi lib loaded success."));
+#if PLATFORM_WINDOWS
 		FMD5Hash hash = FMD5Hash::HashFile(*LibraryPath);
 		UE_LOG(LogTemp, Log, TEXT("MocapApi.dll Hash: %s"), *LexToString(hash));
+#endif // PLATFORM_WINDOWS
 	}
 	else
 	{
+#if PLATFORM_WINDOWS
 		FMessageDialog::Open(EAppMsgType::Ok, LOCTEXT("ThirdPartyLibraryError", "Failed to load MocapApi.dll."));
+#else
+		UE_LOG(LogTemp, Error, TEXT("Failed to load MocapApi native library."));
+#endif
 	}
 }
 

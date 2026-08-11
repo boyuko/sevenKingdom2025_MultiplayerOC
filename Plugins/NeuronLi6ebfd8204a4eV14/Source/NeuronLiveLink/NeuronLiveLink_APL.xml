@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	NeuronLiveLink Android Plugin Language (APL) config file.
+	Adds the manifest permissions MocapApi needs to receive the UDP mocap
+	stream broadcast by Axis Studio over the local network (e.g. from a PC
+	to a Quest 3 headset on the same Wi-Fi).
+
+	NOTE: best-effort addition, not verified against a real Axis Studio ->
+	Quest 3 session. Test on-device and adjust as needed (in particular
+	CHANGE_WIFI_MULTICAST_STATE is only required if MocapApi ends up using
+	multicast rather than plain UDP broadcast/unicast internally).
+-->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+	<init />
+
+	<androidManifestUpdates>
+		<addPermission android:name="android.permission.INTERNET" />
+		<addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
+		<addPermission android:name="android.permission.ACCESS_WIFI_STATE" />
+		<addPermission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+	</androidManifestUpdates>
+
+	<!--
+		PublicAdditionalLibraries in the .Build.cs only guarantees the linker can resolve
+		MCPGetGenericInterface at link time - it does NOT reliably guarantee UE5's Gradle
+		packaging step actually bundles libMocapApi.so into the APK's jniLibs folder. Force
+		it explicitly here (this is the same pattern Epic/FMOD/Esri's own Android APL files
+		use for prebuilt third-party .so's).
+	-->
+	<resourceCopies>
+		<isArch arch="arm64-v8a">
+			<log text="NeuronLiveLink APL: copying libMocapApi.so for $S(Architecture)" />
+			<copyFile
+				src="$S(PluginDir)/../ThirdParty/MocapApi/bin/android/arm64-v8a/libMocapApi.so"
+				dst="$S(BuildDir)/libs/arm64-v8a/libMocapApi.so" />
+		</isArch>
+	</resourceCopies>
+</root>

@@ -74,6 +74,8 @@ public class NeuronLiveLink : ModuleRules
 			}
 			);
 
+
+        /*
         // Add the import library
         string lib_folder_path = Path.Combine(ModuleDirectory, "../ThirdParty/MocapApi", "bin/x64");
         PublicAdditionalLibraries.Add(Path.Combine(lib_folder_path, "MocapApi.lib"));
@@ -83,5 +85,54 @@ public class NeuronLiveLink : ModuleRules
 
         // Runtime Dependencies for Project Package
         RuntimeDependencies.Add(Path.Combine(lib_folder_path, "MocapApi.dll"));
+        */
+        if (Target.Platform == UnrealTargetPlatform.Win64)
+        {
+            string lib_folder_path = Path.Combine(
+                ModuleDirectory,
+                "../ThirdParty/MocapApi",
+                "bin/x64"
+            );
+
+            // Import library
+            PublicAdditionalLibraries.Add(
+                Path.Combine(lib_folder_path, "MocapApi.lib")
+            );
+
+            // Delay-load DLL
+            PublicDelayLoadDLLs.Add("MocapApi.dll");
+
+            // Runtime Dependencies
+            RuntimeDependencies.Add(
+                Path.Combine(lib_folder_path, "MocapApi.dll")
+            );
+        }
+        else if (Target.Platform == UnrealTargetPlatform.Android)
+        {
+            string lib_folder_path = Path.Combine(
+                ModuleDirectory,
+                "../ThirdParty/MocapApi",
+                "bin/android/arm64-v8a"
+            );
+
+            string libMocapApi = Path.Combine(
+                lib_folder_path,
+                "libMocapApi.so"
+            );
+
+            // Link Android shared library so the linker can resolve MCPGetGenericInterface
+            // at link time. NOTE: this alone is NOT enough to guarantee the .so actually
+            // ends up inside the packaged APK's jniLibs under UE5's Gradle pipeline - the
+            // APL xml below has an explicit <resourceCopies> step that force-copies it in
+            // (without that, you'll link fine but crash at startup on-device with
+            // java.lang.UnsatisfiedLinkError: library "libMocapApi.so" not found).
+            PublicAdditionalLibraries.Add(libMocapApi);
+
+            // Register an APL (Android Plugin Language) xml: adds the manifest permissions
+            // MocapApi needs to talk to Axis Studio over the LAN, AND force-copies the .so
+            // into the APK (see NOTE above).
+            string APLFilePath = Path.Combine(ModuleDirectory, "NeuronLiveLink_APL.xml");
+            AdditionalPropertiesForReceipt.Add("AndroidPlugin", APLFilePath);
+        }
     }
 }
