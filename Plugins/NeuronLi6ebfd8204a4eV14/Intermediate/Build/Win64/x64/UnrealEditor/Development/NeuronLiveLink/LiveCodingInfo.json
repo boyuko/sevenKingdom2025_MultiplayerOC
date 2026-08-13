@@ -2,20 +2,6 @@
 	"RemapUnityFiles": 
 	{
 		"Module.NeuronLiveLink.cpp.obj": [
-			"AnimNode_NeuronBlend.cpp.obj",
-			"MocapApiLog.cpp.obj",
-			"MocapAppManager.cpp.obj",
-			"MocapClient.cpp.obj",
-			"MocapStructs.cpp.obj",
-			"NeuronLiveLinkBPLibrary.cpp.obj",
-			"NeuronLiveLinkLog.cpp.obj",
-			"NeuronLiveLinkRemapAsset.cpp.obj",
-			"NeuronLiveLinkSource.cpp.obj",
-			"NeuronLiveLinkSourceFactory.cpp.obj",
-			"NeuronVPVolume.cpp.obj",
-			"PNSAnimInstance.cpp.obj",
-			"SNeuronLiveLinkSourceFactory.cpp.obj",
-			"SubjectNameSetter.cpp.obj",
 			"AnimNode_NeuronBlend.gen.cpp.obj",
 			"MocapAppManager.gen.cpp.obj",
 			"MocapStructs.gen.cpp.obj",
@@ -28,7 +14,21 @@
 			"PNSAnimInstance.gen.cpp.obj",
 			"SubjectNameSetter.gen.cpp.obj",
 			"PerModuleInline.gen.cpp.obj",
-			"NeuronLiveLink.cpp.obj"
+			"AnimNode_NeuronBlend.cpp.obj",
+			"MocapApiLog.cpp.obj",
+			"MocapAppManager.cpp.obj",
+			"NeuronLiveLink.cpp.obj",
+			"NeuronLiveLinkBPLibrary.cpp.obj",
+			"NeuronLiveLinkLog.cpp.obj",
+			"NeuronLiveLinkRemapAsset.cpp.obj",
+			"NeuronLiveLinkSource.cpp.obj",
+			"NeuronLiveLinkSourceFactory.cpp.obj",
+			"NeuronVPVolume.cpp.obj",
+			"PNSAnimInstance.cpp.obj",
+			"SNeuronLiveLinkSourceFactory.cpp.obj",
+			"SubjectNameSetter.cpp.obj",
+			"MocapClient.cpp.obj",
+			"MocapStructs.cpp.obj"
 		]
 	}
 }

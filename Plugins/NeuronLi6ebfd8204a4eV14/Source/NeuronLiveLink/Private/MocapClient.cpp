@@ -5,6 +5,7 @@
 #include "Roles/LiveLinkTransformTypes.h"
 #include "Roles/LiveLinkAnimationTypes.h"
 #include "Misc/App.h"
+#include "MocapApiLog.h"
 
 static TMap<FString, EMCBvhRotationOrder> OrderMap = {
     { TEXT("XYZ"), EMCBvhRotationOrder::XYZ },
@@ -36,7 +37,7 @@ FMocapAppClient::FMocapAppClient(bool IsUDP, const FString& RemoteIP, int Port, 
     : Thread(nullptr)
     , bRunning(true)
 {
-    Sett.Protocol = IsUDP? EMCAppProtocol::UDP: EMCAppProtocol::TCP;
+    Sett.Protocol = IsUDP ? EMCAppProtocol::UDP : EMCAppProtocol::TCP;
     Sett.RemoteIP = RemoteIP;
     Sett.Port = Port;
     Sett.RecvPort = RecvPort;
@@ -83,7 +84,7 @@ uint32 FMocapAppClient::Run()
     while (bRunning)
     {
         PollEvents();
-        FPlatformProcess::Sleep(1.0f/60);
+        FPlatformProcess::Sleep(1.0f / 60);
     }
     if (App)
     {
@@ -125,7 +126,15 @@ bool FMocapAppClient::StartApplication()
     App->RenderSettings = RenderSettings;
     AppName = App->GetConnectionString();
     App->AppName = AppName;
-    App->Connect();
+
+    if (!App->Connect())
+    {
+        UE_LOG(LogMocapApi, Error, TEXT("UMocapApp::Connect() failed for %s - %s. Not starting poll thread."),
+            *AppName, *App->GetLastErrorMessage());
+        App->RemoveFromRoot();
+        App = nullptr;
+        return false;
+    }
 
     Thread = FRunnableThread::Create(this, TEXT("MocapAppClient"));
     return true;
@@ -172,16 +181,16 @@ void FMocapAppClient::PollEvents()
                 }
 
                 const TArray<FName> PropertyNames({ FName(TEXT("WithDisplacement")) });
-                TArray<float> PropertyValues({ (float)(Data->HasLocalPositions[1]? 1.0: 0.0) });
+                TArray<float> PropertyValues({ (float)(Data->HasLocalPositions[1] ? 1.0 : 0.0) });
 
                 QualifiedTime = GetTimecode(Data->ReceiveTime);
 
                 FLiveLinkFrameDataStruct Frame = FLiveLinkFrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
-                
+
                 FLiveLinkBaseFrameData* BaseData = Frame.GetBaseData();
                 BaseData->WorldTime = WorldTime;
                 BaseData->MetaData.SceneTime = QualifiedTime;
-                
+
                 FLiveLinkAnimationFrameData& FrameData = *Frame.Cast<FLiveLinkAnimationFrameData>();
                 FrameData.PropertyValues = PropertyValues;
                 int Count = Data->BoneNames.Num();
@@ -189,7 +198,7 @@ void FMocapAppClient::PollEvents()
                 {
                     FrameData.Transforms.Add(FTransform(Data->LocalRotation[i], Data->LocalPositions[i]));
                 }
-                
+
                 FName AvatarSubjectName = Data->Name;
                 if (!FMocapAppManager::GetInstance().IsNameUsedByApp(AvatarSubjectName, App))
                 {
@@ -205,16 +214,16 @@ void FMocapAppClient::PollEvents()
             for (FString Name : Rigids)
             {
                 const FMocapRigidBody* RigidData = App->GetRigidBody(Name);
-                if (RigidData && (RigidData->ReceiveTicks+ValidTickDur>=Now))
+                if (RigidData && (RigidData->ReceiveTicks + ValidTickDur >= Now))
                 {
                     FName Subject = RigidData->Name;
                     if (!FMocapAppManager::GetInstance().IsNameUsedByApp(Subject, App))
                     {
                         Subject = FMocapAppManager::CombineNameWithAppName(Name, App);
                     }
-                    
+
                     FLiveLinkFrameDataStruct Frame = FLiveLinkFrameDataStruct(FLiveLinkTransformFrameData::StaticStruct());
-                    
+
                     FLiveLinkBaseFrameData* BaseData = Frame.GetBaseData();
                     BaseData->WorldTime = WorldTime;
                     BaseData->MetaData.SceneTime = QualifiedTime;
@@ -229,35 +238,35 @@ void FMocapAppClient::PollEvents()
                 }
             }
 
-			TArray<FString> Trackers;
-			App->GetAllTrackerNames(Trackers);
+            TArray<FString> Trackers;
+            App->GetAllTrackerNames(Trackers);
 
-			for (FString Name : Trackers)
-			{
-				const FMocapTracker* TrackerData = App->GetTracker(Name);
-				if (TrackerData && (TrackerData->ReceiveTicks + ValidTickDur >= Now))
-				{
-					FName Subject = TrackerData->Name;
-					if (!FMocapAppManager::GetInstance().IsNameUsedByApp(Subject, App))
-					{
-						Subject = FMocapAppManager::CombineNameWithAppName(Name, App);
-					}
+            for (FString Name : Trackers)
+            {
+                const FMocapTracker* TrackerData = App->GetTracker(Name);
+                if (TrackerData && (TrackerData->ReceiveTicks + ValidTickDur >= Now))
+                {
+                    FName Subject = TrackerData->Name;
+                    if (!FMocapAppManager::GetInstance().IsNameUsedByApp(Subject, App))
+                    {
+                        Subject = FMocapAppManager::CombineNameWithAppName(Name, App);
+                    }
 
-					FLiveLinkFrameDataStruct Frame = FLiveLinkFrameDataStruct(FLiveLinkTransformFrameData::StaticStruct());
+                    FLiveLinkFrameDataStruct Frame = FLiveLinkFrameDataStruct(FLiveLinkTransformFrameData::StaticStruct());
 
-					FLiveLinkBaseFrameData* BaseData = Frame.GetBaseData();
-					BaseData->WorldTime = WorldTime;
-					BaseData->MetaData.SceneTime = QualifiedTime;
+                    FLiveLinkBaseFrameData* BaseData = Frame.GetBaseData();
+                    BaseData->WorldTime = WorldTime;
+                    BaseData->MetaData.SceneTime = QualifiedTime;
 
-					FLiveLinkTransformFrameData& TransformData = *Frame.Cast<FLiveLinkTransformFrameData>();
-					const FVector& P = TrackerData->Position;
-					const FQuat& Q = TrackerData->Rotation;
-					TransformData.Transform.SetLocation(P);
-					TransformData.Transform.SetRotation(Q);
+                    FLiveLinkTransformFrameData& TransformData = *Frame.Cast<FLiveLinkTransformFrameData>();
+                    const FVector& P = TrackerData->Position;
+                    const FQuat& Q = TrackerData->Rotation;
+                    TransformData.Transform.SetLocation(P);
+                    TransformData.Transform.SetRotation(Q);
 
-					Source->PushTrackerFrameData(Subject, Frame);
-				}
-			}
+                    Source->PushTrackerFrameData(Subject, Frame);
+                }
+            }
         }
     }
 }

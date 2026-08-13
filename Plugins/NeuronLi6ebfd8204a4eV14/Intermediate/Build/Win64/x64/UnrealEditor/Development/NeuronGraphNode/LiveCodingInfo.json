@@ -2,11 +2,11 @@
 	"RemapUnityFiles": 
 	{
 		"Module.NeuronGraphNode.cpp.obj": [
-			"AnimGraphNode_NeuronBlend.cpp.obj",
-			"NeuronGraphNodeModule.cpp.obj",
 			"AnimGraphNode_NeuronBlend.gen.cpp.obj",
 			"NeuronGraphNode.init.gen.cpp.obj",
-			"PerModuleInline.gen.cpp.obj"
+			"PerModuleInline.gen.cpp.obj",
+			"AnimGraphNode_NeuronBlend.cpp.obj",
+			"NeuronGraphNodeModule.cpp.obj"
 		]
 	}
 }

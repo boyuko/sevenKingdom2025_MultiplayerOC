@@ -9,13 +9,15 @@
 
 #define ReturnIFError(...) if (mcpError!=MocapApi::Error_None) { \
     LastError = mcpError; \
-    ExtraErrorMsg = FString::Printf(TEXT("(%s@%d) Error %d"), __FILE__, __LINE__, (int)mcpError); \
+    ExtraErrorMsg = FString::Printf(TEXT("(%s@%d) Error %d"), TEXT(__FILE__), __LINE__, (int)mcpError); \
+    UE_LOG(LogMocapApi, Error, TEXT("MocapApi call failed: %s"), *ExtraErrorMsg); \
     return; \
 }
 
 #define ReturnFalseIFError(...) if (mcpError!=MocapApi::Error_None) { \
     LastError = mcpError; \
-    ExtraErrorMsg = FString::Printf(TEXT("(%s@%d) Error %d"), __FILE__, __LINE__, (int)mcpError); \
+    ExtraErrorMsg = FString::Printf(TEXT("(%s@%d) Error %d"), TEXT(__FILE__), __LINE__, (int)mcpError); \
+    UE_LOG(LogMocapApi, Error, TEXT("MocapApi call failed: %s"), *ExtraErrorMsg); \
     return false; \
 }
 
@@ -47,35 +49,35 @@ UMocapApp::UMocapApp()
 {
     MaxCommandHistory = 16;
     LastCommandHistoryIndex = 0;
-    
+
     if (CommandParamBuildMap.empty())
     {
         CommandParamBuildMap[EMCCommandParamName::ParamStopCatpureExtraFlag] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
             MocapApi::EMCPCommandStopCatpureExtraFlag Flag = (MocapApi::EMCPCommandStopCatpureExtraFlag)FCString::Atoi(*Value);
             return CommandInterface->SetCommandExtraFlags(Flag, handle);
-        };
+            };
         CommandParamBuildMap[EMCCommandParamName::ParamDeviceRadio] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
             int32 V = FCString::Atoi(*Value);
             return CommandInterface->SetCommandExtraLong(MocapApi::CommandExtraLong_DeviceRadio, V, handle);
-        };
+            };
         CommandParamBuildMap[EMCCommandParamName::ParamAvatarName] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
             FTCHARToUTF8 UTF8Value(*Value);
             const char* V = UTF8Value.Get();
             return CommandInterface->SetCommandExtraLong(MocapApi::CommandExtraLong_AvatarName, reinterpret_cast<intptr_t>(V), handle);
-        };
+            };
         CommandParamBuildMap[EMCCommandParamName::ParamTakeName] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
             FTCHARToUTF8 UTF8Value(*Value);
             const char* V = UTF8Value.Get();
             return CommandInterface->SetCommandExtraLong(MocapApi::CommandExtraLong_Extra0, reinterpret_cast<intptr_t>(V), handle);
-        };
+            };
         CommandParamBuildMap[EMCCommandParamName::ParamCalibrateMotionFlag] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
             int32 V = FCString::Atoi(*Value);
             return CommandInterface->SetCommandExtraLong(MocapApi::CommandExtraLong_Extra2, V, handle);
-        };
+            };
         CommandParamBuildMap[EMCCommandParamName::ParamCalibrateMotionOperation] = [](MocapApi::IMCPCommand* CommandInterface, MocapApi::MCPCommandHandle_t handle, const FString& Value) -> MocapApi::EMCPError {
             int32 V = FCString::Atoi(*Value);
             return CommandInterface->SetCommandExtraLong(MocapApi::CommandExtraLong_Extra3, V, handle);
-        };
+            };
     }
 }
 
@@ -95,6 +97,10 @@ bool UMocapApp::Connect()
     // reset Error
     LastError = 0;
     ExtraErrorMsg = TEXT("");
+
+    UE_LOG(LogMocapApi, Log, TEXT("UMocapApp::Connect() starting. Protocol=%s RemoteIP=%s Port=%d RecvPort=%d"),
+        (AppSettings.Protocol == EMCAppProtocol::UDP) ? TEXT("UDP") : TEXT("TCP"),
+        *AppSettings.RemoteIP, AppSettings.Port, AppSettings.RecvPort);
 
     // create application
     MocapApi::MCPApplicationHandle_t appcliation;
@@ -130,8 +136,8 @@ bool UMocapApp::Connect()
     mcpError = mcpSettings->SetSettingsBvhTransformation(EnableTrans, mcpSettingsHandle);
     ReturnFalseIFError();
 
-// 	mcpError = mcpSettings->SetSettingsTrackerData(mcpSettingsHandle);
-// 	ReturnFalseIFError();
+    // 	mcpError = mcpSettings->SetSettingsTrackerData(mcpSettingsHandle);
+    // 	ReturnFalseIFError();
 
     bool isUDP = AppSettings.Protocol == EMCAppProtocol::UDP;
     FTCHARToUTF8 UTF8IPAddress(*AppSettings.RemoteIP);
@@ -141,17 +147,29 @@ bool UMocapApp::Connect()
     if (isUDP)
     {
         mcpError = mcpSettings->SetSettingsUDP(RecvPort, mcpSettingsHandle);
-        mcpError = mcpSettings->SetSettingsUDPServer(IPAddress, Port, mcpSettingsHandle);
+        ReturnFalseIFError();
+
+        // NOTE: SetSettingsUDPServer is only required if you're hosting your own
+        // custom UDP server role. For the standard "receive Axis Studio's BVH UDP
+        // broadcast" use case, SetSettingsUDP alone is sufficient - see
+        // https://github.com/pnmocap/MocapApi/issues/14. Don't let a failure here
+        // abort the whole connection, just log it and carry on.
+        MocapApi::EMCPError ServerError = mcpSettings->SetSettingsUDPServer(IPAddress, Port, mcpSettingsHandle);
+        if (ServerError != MocapApi::Error_None)
+        {
+            UE_LOG(LogMocapApi, Warning, TEXT("SetSettingsUDPServer non-fatal error %d for %s:%d (continuing with SetSettingsUDP only)"),
+                (int)ServerError, *AppSettings.RemoteIP, Port);
+        }
     }
     else
     {
         mcpError = mcpSettings->SetSettingsTCP(IPAddress, Port, mcpSettingsHandle);
+        ReturnFalseIFError();
     }
-    ReturnFalseIFError();
 
     mcpError = mcpApplication->SetApplicationSettings(mcpSettingsHandle, appcliation);
     ReturnFalseIFError();
-    
+
     mcpError = mcpSettings->DestroySettings(mcpSettingsHandle);
     ReturnFalseIFError();
 
@@ -184,7 +202,7 @@ bool UMocapApp::Connect()
         renderSettings->SetFrontVector(FrontAxis, 1, renderSettingsHandle);
         renderSettings->SetCoordSystem(Hand, renderSettingsHandle);
         renderSettings->SetRotatingDirection(RotDir, renderSettingsHandle);
-		renderSettings->SetUnit(MocapApi::EMCPUnit::Unit_Centimeter, renderSettingsHandle);
+        renderSettings->SetUnit(MocapApi::EMCPUnit::Unit_Centimeter, renderSettingsHandle);
 
         mcpError = mcpApplication->SetApplicationRenderSettings(renderSettingsHandle, appcliation);
         ReturnFalseIFError();
@@ -201,8 +219,9 @@ bool UMocapApp::Connect()
     IsConnecting = true;
     // add to manager when connecting
     FMocapAppManager::GetInstance().AddMocapApp(this);
+    UE_LOG(LogMocapApi, Log, TEXT("UMocapApp::Connect() succeeded, App registered: %s"), *AppName);
 
-	// lihongce
+    // lihongce
 // 	MocapApi::MCPTrackerHandle_t pTrackerHandle;
 // 	uint32_t punTrackerHandle;
 // 	mcpApplication->GetApplicationTrackers(&pTrackerHandle, &punTrackerHandle, appcliation);
@@ -293,7 +312,7 @@ bool UMocapApp::PollEvents()
     if (hasUnhandledEvents) {
         events.AddUninitialized(unEvent);
         //events.resize(unEvent);
-        for (auto & e : events) {
+        for (auto& e : events) {
             e.size = sizeof(MocapApi::MCPEvent_t);
             e.eventType = MocapApi::MCPEvent_None;
         }
@@ -305,7 +324,7 @@ bool UMocapApp::PollEvents()
     if (hasUnhandledEvents) {
         FScopeLock Lock(&CriticalSection);
 
-        for (const auto & e : events) {
+        for (const auto& e : events) {
             if (e.eventType == MocapApi::MCPEvent_AvatarUpdated) {
                 // handle received acvatar data
                 HandleAvatarUpdateEvent(e.eventData.motionData.avatarHandle);
@@ -313,10 +332,10 @@ bool UMocapApp::PollEvents()
             else if (e.eventType == MocapApi::MCPEvent_RigidBodyUpdated) {
                 //HandleRigidBodyUpdateEvent(, 0)
             }
-			else if (e.eventType == MocapApi::MCPEvent_TrackerUpdated) {
+            else if (e.eventType == MocapApi::MCPEvent_TrackerUpdated) {
                 // handle tracker data
-				HandleTrackerUpdateEvent(e.eventData.trackerData._trackerHandle);
-			}
+                HandleTrackerUpdateEvent(e.eventData.trackerData._trackerHandle);
+            }
             else if (e.eventType == MocapApi::MCPEvent_CommandReply) {
                 // handle event reply
                 HandleCommandReplyEvent(e.eventData.commandRespond._commandHandle, e.eventData.commandRespond._replay);
@@ -354,7 +373,7 @@ bool UMocapApp::PollEvents()
             IsReady = true;
         }
     }
-    
+
     HandleMocapCommandsTimeout();
 
     //TreatNotifyEvents();
@@ -364,35 +383,35 @@ bool UMocapApp::PollEvents()
 
 void UMocapApp::GetAllTrackerNames(TArray<FString>& NameArray)
 {
-	FScopeLock Lock(&CriticalSection);
-	Trackers.GetKeys(NameArray);
+    FScopeLock Lock(&CriticalSection);
+    Trackers.GetKeys(NameArray);
 }
 
 bool UMocapApp::GetTracker(const FString& TrackerName, FVector& Position, FRotator& Rotation, int& Status)
 {
-	FQuat q;
-	bool Result = GetTrackerPose(TrackerName, Position, q, Status);
-	Rotation = q.Rotator();
-	return Result;
+    FQuat q;
+    bool Result = GetTrackerPose(TrackerName, Position, q, Status);
+    Rotation = q.Rotator();
+    return Result;
 }
 
 bool UMocapApp::GetTrackerPose(const FString& TrackerName, FVector& Position, FQuat& Rotation, int& Status)
 {
-	FScopeLock Lock(&CriticalSection);
-	const FMocapTracker* Tracker = GetTracker(TrackerName);
-	if (Tracker != nullptr)
-	{
-		Position = Tracker->Position;
-		Rotation = Tracker->Rotation;
-		Status = Tracker->Status;
-		return true;
-	}
-	return false;
+    FScopeLock Lock(&CriticalSection);
+    const FMocapTracker* Tracker = GetTracker(TrackerName);
+    if (Tracker != nullptr)
+    {
+        Position = Tracker->Position;
+        Rotation = Tracker->Rotation;
+        Status = Tracker->Status;
+        return true;
+    }
+    return false;
 }
 
 const FMocapTracker* UMocapApp::GetTracker(const FString& TrackerName)
 {
-	return Trackers.Find(TrackerName);
+    return Trackers.Find(TrackerName);
 }
 
 void UMocapApp::GetAllRigidBodyNames(TArray<FString>& NameArray)
@@ -445,7 +464,7 @@ bool UMocapApp::GetAvatarData(const FString& AvatarName, TArray<FVector>& LocalP
         LocalRotations.SetNum(Num);
         for (int i = 0; i < Num; ++i)
         {
-            LocalPositions[i] = Data->HasLocalPositions[i]? Data->LocalPositions[i]: Data->DefaultLocalPositions[i];
+            LocalPositions[i] = Data->HasLocalPositions[i] ? Data->LocalPositions[i] : Data->DefaultLocalPositions[i];
             LocalRotations[i] = Data->LocalRotation[i].Rotator();
         }
         return true;
@@ -581,9 +600,9 @@ bool UMocapApp::HandleAvatarUpdateEvent(uint64 Avatarhandle)
         reinterpret_cast<void**>(&avatarMgr));
     ReturnFalseIFError();
 
-    MocapApi::IMCPJoint * mcpJoint = nullptr;
+    MocapApi::IMCPJoint* mcpJoint = nullptr;
     mcpError = MocapApi::MCPGetGenericInterface(MocapApi::IMCPJoint_Version,
-        reinterpret_cast<void **>(&mcpJoint));
+        reinterpret_cast<void**>(&mcpJoint));
     ReturnFalseIFError();
 
     const char* AvatarName = nullptr;
@@ -595,11 +614,11 @@ bool UMocapApp::HandleAvatarUpdateEvent(uint64 Avatarhandle)
     }
     FString Name = FUTF8ToTCHAR(AvatarName).Get();
 
-	if (Name.IsEmpty())
-	{
-		ReturnFalseIFError("Avatar Name is Empty");
-	}
-    
+    if (Name.IsEmpty())
+    {
+        ReturnFalseIFError("Avatar Name is Empty");
+    }
+
     FMocapAvatar& avatar = Avatars.FindOrAdd(Name);
     avatar.Name = FName(Name);
 
@@ -620,9 +639,9 @@ bool UMocapApp::HandleAvatarUpdateEvent(uint64 Avatarhandle)
     FMocapTimeCode& TC = avatar.ReceiveTime;
     avatarMgr->GetAvatarPostureTimeCode(&TC.Hour, &TC.Minute, &TC.Second, &TC.Frame, &TC.Rate, Avatarhandle);
 
-	// LIHONGCE:
-	if (TC.Rate == 0)
-		TC.Rate = 24;
+    // LIHONGCE:
+    if (TC.Rate == 0)
+        TC.Rate = 24;
 
     avatar.ReceiveTicks = FDateTime::UtcNow().GetTicks();
 
@@ -636,8 +655,8 @@ bool UMocapApp::HandleAvatarUpdateEvent(uint64 Avatarhandle)
         mcpError = avatarMgr->GetAvatarJoints(JointsHandle.GetData(), &Count, Avatarhandle);
         ReturnFalseIFError();
 
-		float PosX, PosY, PosZ;
-		float RotX, RotY, RotZ, RotW;
+        float PosX, PosY, PosZ;
+        float RotX, RotY, RotZ, RotW;
 
         MocapApi::EMCPJointTag jointTag;
         MocapApi::EMCPJointTag parentJointTag;
@@ -701,7 +720,7 @@ bool UMocapApp::HandleAvatarUpdateEvent(uint64 Avatarhandle)
     mcpError = avatarMgr->GetAvatarPostureIndex(&PostureIndex, Avatarhandle);
     ReturnFalseIFError();
     avatar.PostureIndex = PostureIndex;
-    
+
     //CheckAvatarJoint(Avatarhandle, RootJoint, avatar);
     FMocapAppManager::GetInstance().OnRecieveMocapData(avatar.Name, this);
 
@@ -770,7 +789,7 @@ void UMocapApp::CheckAvatarJoint(uint64 Avatarhandle, uint64 JointHandle, const 
 
     float x, y, z, w;
     mcpError = jointMgr->GetJointLocalPosition(&x, &y, &z, JointHandle);
-    bool HasPos = (mcpError==MocapApi::EMCPError::Error_None);
+    bool HasPos = (mcpError == MocapApi::EMCPError::Error_None);
     CheckBool(avatar.HasLocalPositions[jointTag], HasPos);
     if (HasPos || avatar.HasLocalPositions[jointTag])
     {
@@ -803,18 +822,18 @@ void UMocapApp::CheckAvatarJoint(uint64 Avatarhandle, uint64 JointHandle, const 
 
 bool UMocapApp::HandleTrackerUpdateEvent(uint64 TrackerHandle, int ReservedData)
 {
-	MocapApi::IMCPTracker* TrackerMgr = nullptr;
-	MocapApi::EMCPError mcpError = MocapApi::MCPGetGenericInterface(MocapApi::IMCPTracker_Version,
-		reinterpret_cast<void**>(&TrackerMgr));
-	ReturnFalseIFError();
+    MocapApi::IMCPTracker* TrackerMgr = nullptr;
+    MocapApi::EMCPError mcpError = MocapApi::MCPGetGenericInterface(MocapApi::IMCPTracker_Version,
+        reinterpret_cast<void**>(&TrackerMgr));
+    ReturnFalseIFError();
 
     int TrackerCount = 0;
     mcpError = TrackerMgr->GetDeviceCount(&TrackerCount, TrackerHandle);
     ReturnFalseIFError();
 
-	float PosX, PosY, PosZ;
-	float RotX, RotY, RotZ, RotW;
-	
+    float PosX, PosY, PosZ;
+    float RotX, RotY, RotZ, RotW;
+
     for (int Idx = 0; Idx < TrackerCount; ++Idx)
     {
         const char* name = nullptr;
@@ -846,7 +865,7 @@ bool UMocapApp::HandleTrackerUpdateEvent(uint64 TrackerHandle, int ReservedData)
 
         //delete name;
     }
-	return true;
+    return true;
 }
 
 bool UMocapApp::HandleRigidBodyUpdateEvent(uint64 RigidBodyHandle, int ReservedData)
@@ -856,8 +875,8 @@ bool UMocapApp::HandleRigidBodyUpdateEvent(uint64 RigidBodyHandle, int ReservedD
         reinterpret_cast<void**>(&RigidBodyMgr));
     ReturnFalseIFError();
 
-	float PosX, PosY, PosZ;
-	float RotX, RotY, RotZ, RotW;
+    float PosX, PosY, PosZ;
+    float RotX, RotY, RotZ, RotW;
 
     int RigidID = 0;
     RigidBodyMgr->GetRigidBodyId(&RigidID, RigidBodyHandle);
@@ -894,7 +913,7 @@ bool UMocapApp::HandleRigidBodyUpdateEvent(uint64 RigidBodyHandle, int ReservedD
 
 static bool IsCalibrateCmd(EMCCommandType Cmd)
 {
-    return (Cmd == EMCCommandType::CalibrateMotion) || (Cmd >= EMCCommandType::GetManualCaliPoses && Cmd<= EMCCommandType::ManualCalibrateFinish);
+    return (Cmd == EMCCommandType::CalibrateMotion) || (Cmd >= EMCCommandType::GetManualCaliPoses && Cmd <= EMCCommandType::ManualCalibrateFinish);
 }
 
 static MocapApi::EMCPCommand MappingCommandTypeToMocapCommand(EMCCommandType Cmd)
@@ -930,7 +949,7 @@ bool UMocapApp::HandleCommandReplyEvent(uint64 CommandHandle, int replay)
         const char* msg = nullptr;
         mcpError = CommandInterface->GetCommandResultMessage(&msg, CommandHandle);
         FString MsgStr = FUTF8ToTCHAR(msg).Get();
-        
+
         uint32 code = 0;
         mcpError = CommandInterface->GetCommandResultCode(&code, CommandHandle);
 
@@ -964,7 +983,7 @@ bool UMocapApp::HandleCommandReplyEvent(uint64 CommandHandle, int replay)
             uint32_t substep = 0;
             uint32_t subsubstep = 0;
             uint32_t lenOfPose = maxPoseCnt;
-            char poseStr[maxPoseCnt+1];
+            char poseStr[maxPoseCnt + 1];
 
             if (Cmd->ProgressHandle == 0)
             {
@@ -1003,21 +1022,21 @@ bool UMocapApp::HandleCommandReplyEvent(uint64 CommandHandle, int replay)
                 //ASSERT_TRUE(false);
                 break;
             case MocapApi::CalibrateMotionProgressStep_Countdown:
-                {
-                    mcpError = CalibrateMotionProgress->GetCalibrateMotionProgressCountdownOfCurrentPose(
-                        &substep, poseStr, &lenOfPose, Cmd->ProgressHandle);
-                    poseStr[lenOfPose] = '\0';
-                    PoseSubStepName = FString::Printf(TEXT("[Countdown of %s %d]"), UTF8_TO_TCHAR(poseStr), substep);
-                }
-                break;
+            {
+                mcpError = CalibrateMotionProgress->GetCalibrateMotionProgressCountdownOfCurrentPose(
+                    &substep, poseStr, &lenOfPose, Cmd->ProgressHandle);
+                poseStr[lenOfPose] = '\0';
+                PoseSubStepName = FString::Printf(TEXT("[Countdown of %s %d]"), UTF8_TO_TCHAR(poseStr), substep);
+            }
+            break;
             case MocapApi::CalibrateMotionProgressStep_Progress:
-                {
-                    mcpError = CalibrateMotionProgress->GetCalibrateMotionProgressProgressOfCurrentPose(
-                        &substep, poseStr, &lenOfPose, Cmd->ProgressHandle);
-                    poseStr[lenOfPose] = '\0';
-                    PoseSubStepName = FString::Printf(TEXT("[Progress of %s %d]"), UTF8_TO_TCHAR(poseStr), substep);
-                }
-                break;
+            {
+                mcpError = CalibrateMotionProgress->GetCalibrateMotionProgressProgressOfCurrentPose(
+                    &substep, poseStr, &lenOfPose, Cmd->ProgressHandle);
+                poseStr[lenOfPose] = '\0';
+                PoseSubStepName = FString::Printf(TEXT("[Progress of %s %d]"), UTF8_TO_TCHAR(poseStr), substep);
+            }
+            break;
             default:
                 //ASSERT_TRUE(false);
                 break;
@@ -1056,7 +1075,7 @@ bool UMocapApp::HandleCommandReplyEvent(uint64 CommandHandle, int replay)
     {
         UE_LOG(LogMocapApi, Log, TEXT("Get Response for Command CommandHandle %lld"), CommandHandle);
     }
-    
+
     return true;
 }
 
@@ -1077,7 +1096,7 @@ void UMocapApp::PrepareAndSendMocapCommand(MocapApi::IMCPApplication* mcpApplica
             const FMocapServerCommand* LastCmd = GetLastCommandInHistory();
             bool LastCommandIsCalibrate = LastCmd && IsCalibrateCmd(LastCmd->Cmd);
             bool GetManualCaliPosesAlwaysCreateNew = (Cmd.Cmd == EMCCommandType::GetManualCaliPoses);
-            
+
             if (!CurrentCommandIsCalibrate || !LastCommandIsCalibrate || LastCalibrationFinished || GetManualCaliPosesAlwaysCreateNew)
             {
                 MocapApi::EMCPCommand InnetCommandType = MappingCommandTypeToMocapCommand(Cmd.Cmd);
@@ -1110,7 +1129,7 @@ void UMocapApp::PrepareAndSendMocapCommand(MocapApi::IMCPApplication* mcpApplica
                 Cmd.Params.Add(EMCCommandParamName::ParamCalibrateMotionOperation, FString::FromInt(MocapApi::CalibrateMotionOperation_Next));
                 Cmd.IsManualCalibrating = true;
             }
-            
+
             FString CmdParams;
             UEnum* EMCCommandParamEnum = StaticEnum<EMCCommandParamName>();
             for (auto It : Cmd.Params)
@@ -1122,7 +1141,7 @@ void UMocapApp::PrepareAndSendMocapCommand(MocapApi::IMCPApplication* mcpApplica
             }
             MocapApi::MCPApplicationHandle_t appcliation = AppHandle;
             mcpError = mcpApplication->QueuedServerCommand(command, appcliation);
-            
+
             UEnum* EMCCommandTypeEnum = StaticEnum<EMCCommandType>();
             FString CmdName = EMCCommandTypeEnum->GetValueAsString(Cmd.Cmd);
             UE_LOG(LogMocapApi, Log, TEXT("QueuedServerCommand app: %s[%lld] Cmd %s[%lld] (%s) result %d"),
@@ -1201,7 +1220,7 @@ bool UMocapApp::HandleRecordNotifyEvent(int NotifyType, uint64 notifyHandle)
     ReturnFalseIFError();
 
     FMocapRecordNotify n;
-    n.NotifyType = (NotifyType>=0 && NotifyType< RecordNotifyNames.Num())? RecordNotifyNames[NotifyType]: NAME_None;
+    n.NotifyType = (NotifyType >= 0 && NotifyType < RecordNotifyNames.Num()) ? RecordNotifyNames[NotifyType] : NAME_None;
     const char* name = nullptr;
     notifyMgr->RecordNotifyGetTakeName(&name, notifyHandle);
     if (name)
@@ -1268,7 +1287,7 @@ void UMocapApp::DumpData()
     UE_LOG(LogMocapApi, Log, TEXT("Name: %s %s Connected: %s"),
         *AppName,
         *GetConnectionString(),
-        IsConnecting? TEXT("TRUE"): TEXT("FALSE")
+        IsConnecting ? TEXT("TRUE") : TEXT("FALSE")
     );
     UE_LOG(LogMocapApi, Log, TEXT("Trackers Num: %d RigidBodies Num: %d Avatars Num: %d"),
         Trackers.Num(),
@@ -1316,7 +1335,7 @@ void UMocapApp::DumpData()
     if (QueuedCommands.Num() > 0)
     {
         UE_LOG(LogMocapApi, Log, TEXT("==== Command Queue ===="));
-        
+
         for (auto& Cmd : QueuedCommands)
         {
             FString CmdName = EMCCommandTypeEnum->GetValueAsString(Cmd.Cmd);
@@ -1374,9 +1393,9 @@ TArray<int> UMocapApp::GetAvatarBuildinParentIds()
 
 void UMocapApp::InitAvatarBuildinInfo()
 {
-    MocapApi::IMCPJoint * mcpJoint = nullptr;
+    MocapApi::IMCPJoint* mcpJoint = nullptr;
     MocapApi::EMCPError mcpError = MocapApi::MCPGetGenericInterface(MocapApi::IMCPJoint_Version,
-        reinterpret_cast<void **>(&mcpJoint));
+        reinterpret_cast<void**>(&mcpJoint));
 
     const int JointCount = MocapApi::JointTag_JointsCount;
     AvatarBoneNames.SetNumUninitialized(JointCount);
