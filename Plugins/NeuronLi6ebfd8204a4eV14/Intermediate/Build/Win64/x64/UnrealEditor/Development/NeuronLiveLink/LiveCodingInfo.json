@@ -17,6 +17,8 @@
 			"AnimNode_NeuronBlend.cpp.obj",
 			"MocapApiLog.cpp.obj",
 			"MocapAppManager.cpp.obj",
+			"MocapClient.cpp.obj",
+			"MocapStructs.cpp.obj",
 			"NeuronLiveLink.cpp.obj",
 			"NeuronLiveLinkBPLibrary.cpp.obj",
 			"NeuronLiveLinkLog.cpp.obj",
@@ -26,9 +28,7 @@
 			"NeuronVPVolume.cpp.obj",
 			"PNSAnimInstance.cpp.obj",
 			"SNeuronLiveLinkSourceFactory.cpp.obj",
-			"SubjectNameSetter.cpp.obj",
-			"MocapClient.cpp.obj",
-			"MocapStructs.cpp.obj"
+			"SubjectNameSetter.cpp.obj"
 		]
 	}
 }

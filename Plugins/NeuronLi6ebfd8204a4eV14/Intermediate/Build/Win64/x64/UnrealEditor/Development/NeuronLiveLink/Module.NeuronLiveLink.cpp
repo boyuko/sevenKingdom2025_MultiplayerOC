@@ -14,6 +14,8 @@
 #include "D:/Work/2025Kingdom/UE/MultiplayerOC/Plugins/NeuronLi6ebfd8204a4eV14/Source/NeuronLiveLink/Private/AnimNode_NeuronBlend.cpp"
 #include "D:/Work/2025Kingdom/UE/MultiplayerOC/Plugins/NeuronLi6ebfd8204a4eV14/Source/NeuronLiveLink/Private/MocapApiLog.cpp"
 #include "D:/Work/2025Kingdom/UE/MultiplayerOC/Plugins/NeuronLi6ebfd8204a4eV14/Source/NeuronLiveLink/Private/MocapAppManager.cpp"
+#include "D:/Work/2025Kingdom/UE/MultiplayerOC/Plugins/NeuronLi6ebfd8204a4eV14/Source/NeuronLiveLink/Private/MocapClient.cpp"
+#include "D:/Work/2025Kingdom/UE/MultiplayerOC/Plugins/NeuronLi6ebfd8204a4eV14/Source/NeuronLiveLink/Private/MocapStructs.cpp"
 #include "D:/Work/2025Kingdom/UE/MultiplayerOC/Plugins/NeuronLi6ebfd8204a4eV14/Source/NeuronLiveLink/Private/NeuronLiveLink.cpp"
 #include "D:/Work/2025Kingdom/UE/MultiplayerOC/Plugins/NeuronLi6ebfd8204a4eV14/Source/NeuronLiveLink/Private/NeuronLiveLinkBPLibrary.cpp"
 #include "D:/Work/2025Kingdom/UE/MultiplayerOC/Plugins/NeuronLi6ebfd8204a4eV14/Source/NeuronLiveLink/Private/NeuronLiveLinkLog.cpp"
