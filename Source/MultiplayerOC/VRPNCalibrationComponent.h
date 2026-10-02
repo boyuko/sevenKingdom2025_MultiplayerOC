@@ -95,6 +95,22 @@ struct FVRPNCalibrationResult
 	double YawDeltaDegrees = 0.0;
 };
 
+/** What the master (authority) publishes so every other machine ends up with the same owner transform, including late joiners. */
+USTRUCT()
+struct FVRPNReplicatedCalibration
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	bool bValid = false;
+
+	UPROPERTY()
+	int32 Revision = 0;
+
+	UPROPERTY()
+	FTransform Transform;
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVRPNCalibrationFinished, const FVRPNCalibrationResult&, Result);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -182,6 +198,45 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPN Calibration|Persistence")
 	bool bShowOnScreenMessage = true;
 
+	/** Automatically call SaveCalibration() when play ends (PIE Stop in the Editor, or quitting a packaged Game build). Catches any state that wasn't saved yet. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPN Calibration|Persistence")
+	bool bAutoSaveOnEndPlay = true;
+
+	/** Multiplayer: only the machine with authority over the owner (the server/host, the "master") performs the EndPlay auto-save. Has no effect in a non-networked (standalone) game. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPN Calibration|Persistence")
+	bool bEndPlaySaveAuthorityOnly = true;
+
+	// ---------------------------------------------------------------- Network
+
+	/**
+	 * Multiplayer: calibration must run on the master (the machine with authority over the owner, i.e. the server/host).
+	 * When this is on, the calibrated owner transform is replicated to all clients (late joiners included).
+	 * Requires "Replicates" to be enabled on the owner actor (BP_VRPNTransform).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPN Calibration|Network")
+	bool bReplicateToClients = true;
+
+	// ---------------------------------------------------------------- Nudge
+
+	/**
+	 * Pivot actor for CW/CCW rotation nudges. When unset, OriginMarker is used instead, so rotation keeps
+	 * the calibrated origin point fixed. Its LIVE current world position is used every time (not a frozen snapshot).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPN Calibration|Nudge")
+	TObjectPtr<AActor> PivotMarkerOverride;
+
+	/** World-space units per second while a move key is held down. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPN Calibration|Nudge", meta = (ClampMin = "0.0"))
+	double MoveSpeed = 50.0;
+
+	/** Yaw degrees per second while a rotate key is held down. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPN Calibration|Nudge", meta = (ClampMin = "0.0"))
+	double RotateSpeedDegrees = 30.0;
+
+	/** Call SaveCalibration() once, when all nudge keys have been released. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPN Calibration|Nudge")
+	bool bAutoSaveAfterNudge = true;
+
 	// ---------------------------------------------------------------- API
 
 	/** Start averaging the markers for SampleDuration seconds, then calibrate. Result arrives through OnCalibrationFinished. */
@@ -206,6 +261,61 @@ public:
 	/** Load location + rotation from Saved/<SaveFileName> and apply it to the owner. */
 	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration")
 	bool LoadCalibration();
+
+	// ---- Nudge: press-and-hold fine adjustment after calibration. Bind each pair to an input action's
+	// Pressed/Released execution pins (e.g. on the PlayerController/input Blueprint, not on BP_VRPNTransform
+	// itself). Movement is along fixed WORLD axes (X=Forward/Back, Y=Right/Left, Z=Up/Down); rotation is
+	// yaw-only about world Z, pivoting on GetPivotMarker()'s live world position. Blocked while a timed
+	// calibration is sampling, and (like calibration) only runs on the master; clients are synced via
+	// PublishToClients once all keys are released.
+
+	/** Hold to move along fixed world +X. */
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveForwardPressed();
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveForwardReleased();
+
+	/** Hold to move along fixed world -X. */
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveBackPressed();
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveBackReleased();
+
+	/** Hold to move along fixed world -Y. */
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveLeftPressed();
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveLeftReleased();
+
+	/** Hold to move along fixed world +Y. */
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveRightPressed();
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveRightReleased();
+
+	/** Hold to move along fixed world +Z (up). */
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveUpPressed();
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveUpReleased();
+
+	/** Hold to move along fixed world -Z (down). */
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveDownPressed();
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeMoveDownReleased();
+
+	/** Hold to rotate clockwise (yaw) about the pivot. */
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeRotateCWPressed();
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeRotateCWReleased();
+
+	/** Hold to rotate counter-clockwise (yaw) about the pivot. */
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeRotateCCWPressed();
+	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration|Nudge")
+	void NudgeRotateCCWReleased();
 
 	UFUNCTION(BlueprintPure, Category = "VRPN Calibration")
 	bool IsCalibrating() const { return bCalibrating; }
@@ -241,9 +351,12 @@ public:
 		const FVector& TargetOrigin, const FVector& TargetAxis, const FVector& TargetThird,
 		FQuat& OutRotation, FVector& OutLocation, FString& OutError);
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
 	bool GetMarkerInOwnerSpace(const AActor* Marker, FVector& OutLocal, FString& OutError) const;
@@ -252,6 +365,36 @@ private:
 	void FinishWith(const FVRPNCalibrationResult& Result);
 	static void AverageAndJitter(const TArray<FVector>& Samples, FVector& OutMean, double& OutMaxDeviation);
 	void VerifyOwnerTransform();
+
+	/** Authority only: hand the transform to the replication system. Returns a short note for the result message. */
+	FString PublishToClients(const FTransform& NewTransform);
+
+	/** Shared by calibration and nudge: Mobility check, SetActorTransform, immediate readback, schedules the delayed "was it overwritten?" check. */
+	bool ApplyOwnerTransform(const FTransform& NewTransform, const TCHAR* LogContext, FString& OutError);
+
+	/** PivotMarkerOverride if set, otherwise OriginMarker. May be null. */
+	AActor* GetPivotMarker() const;
+
+	bool IsAnyNudgeHeld() const;
+	void ClearAllNudgeHolds();
+	void BeginContinuousNudge();
+	void EndContinuousNudge();
+	void TickContinuousNudge(float DeltaTime);
+
+	bool bHoldMoveForward = false;
+	bool bHoldMoveBack = false;
+	bool bHoldMoveLeft = false;
+	bool bHoldMoveRight = false;
+	bool bHoldMoveUp = false;
+	bool bHoldMoveDown = false;
+	bool bHoldRotateCW = false;
+	bool bHoldRotateCCW = false;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Calibration)
+	FVRPNReplicatedCalibration ReplicatedCalibration;
+
+	UFUNCTION()
+	void OnRep_Calibration();
 
 	int32 VerifyTicksRemaining = 0;
 	FTransform VerifyExpectedTransform;

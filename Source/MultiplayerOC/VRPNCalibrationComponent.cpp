@@ -6,6 +6,7 @@
 #include "HAL/PlatformFileManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVRPNCalibration, Log, All);
 
@@ -15,16 +16,78 @@ UVRPNCalibrationComponent::UVRPNCalibrationComponent()
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 	// Sample after LiveLink component controllers have moved the markers this frame.
 	PrimaryComponentTick.TickGroup = TG_PostUpdateWork;
+	SetIsReplicatedByDefault(true);
+}
+
+void UVRPNCalibrationComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UVRPNCalibrationComponent, ReplicatedCalibration);
+}
+
+void UVRPNCalibrationComponent::OnRep_Calibration()
+{
+	// Runs on clients only: adopt the transform the master calibrated.
+	AActor* Owner = GetOwner();
+	if (!Owner || !ReplicatedCalibration.bValid)
+	{
+		return;
+	}
+	Owner->SetActorTransform(ReplicatedCalibration.Transform, false, nullptr, ETeleportType::TeleportPhysics);
+	UE_LOG(LogVRPNCalibration, Log, TEXT("Received calibration from master (revision %d): location %s"),
+		ReplicatedCalibration.Revision, *ReplicatedCalibration.Transform.GetLocation().ToString());
+}
+
+FString UVRPNCalibrationComponent::PublishToClients(const FTransform& NewTransform)
+{
+	AActor* Owner = GetOwner();
+	if (!bReplicateToClients || !Owner || !Owner->HasAuthority() || GetNetMode() == NM_Standalone)
+	{
+		return FString();
+	}
+	if (!Owner->GetIsReplicated() || !GetIsReplicated())
+	{
+		return TEXT(" NOTE: the owner/component is not replicated, so other machines were NOT updated (enable Replicates on the owner actor).");
+	}
+
+	ReplicatedCalibration.bValid = true;
+	ReplicatedCalibration.Revision++;
+	ReplicatedCalibration.Transform = NewTransform;
+	Owner->ForceNetUpdate();
+	return TEXT(" Synced to clients.");
 }
 
 void UVRPNCalibrationComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (bAutoLoadOnBeginPlay)
+	// Only the master loads from disk; clients receive the result through replication.
+	if (bAutoLoadOnBeginPlay && GetOwner() && GetOwner()->HasAuthority())
 	{
 		LoadCalibration();
 	}
+}
+
+void UVRPNCalibrationComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (bAutoSaveOnEndPlay)
+	{
+		const AActor* Owner = GetOwner();
+		// No owner / no authority info available: don't block the save on that alone.
+		const bool bIsAuthority = !Owner || Owner->HasAuthority();
+
+		if (!bEndPlaySaveAuthorityOnly || bIsAuthority)
+		{
+			const bool bOk = SaveCalibration();
+			UE_LOG(LogVRPNCalibration, Log, TEXT("EndPlay auto-save (reason %d): %s"), static_cast<int32>(EndPlayReason), bOk ? TEXT("ok") : TEXT("FAILED"));
+		}
+		else
+		{
+			UE_LOG(LogVRPNCalibration, Log, TEXT("EndPlay auto-save skipped: this machine is not the authority (client)."));
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -175,6 +238,14 @@ bool UVRPNCalibrationComponent::GetMarkerInOwnerSpace(const AActor* Marker, FVec
 bool UVRPNCalibrationComponent::SampleMarkers(FVector& OutA, FVector& OutB, FVector& OutC, FString& OutError) const
 {
 	OutC = FVector::ZeroVector;
+	if (const AActor* Owner = GetOwner())
+	{
+		if (!Owner->HasAuthority())
+		{
+			OutError = TEXT("Calibration must run on the master (the machine with authority over the owner, i.e. the server/host). This machine is a client.");
+			return false;
+		}
+	}
 	if (!GetMarkerInOwnerSpace(OriginMarker, OutA, OutError)) { return false; }
 	if (!GetMarkerInOwnerSpace(AxisMarker, OutB, OutError)) { return false; }
 	if (bUseThirdPoint && !GetMarkerInOwnerSpace(ThirdMarker, OutC, OutError)) { return false; }
@@ -271,9 +342,15 @@ void UVRPNCalibrationComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (!bCalibrating && IsAnyNudgeHeld())
+	{
+		TickContinuousNudge(DeltaTime);
+		return;
+	}
+
 	if (!bCalibrating)
 	{
-		// Idle: only used for the short "was the result overwritten?" check after a successful calibration.
+		// Idle: only used for the short "was the result overwritten?" check after a successful calibration/nudge.
 		if (VerifyTicksRemaining > 0)
 		{
 			if (--VerifyTicksRemaining == 0)
@@ -423,29 +500,15 @@ FVRPNCalibrationResult UVRPNCalibrationComponent::ComputeAndApply(const TArray<F
 	Result.ThirdResidual = bUseThirdPoint ? (ToWorld(C) - TargetThirdWorld).Size() : 0.0;
 
 	// ---- apply
-	const USceneComponent* OwnerRoot = Owner->GetRootComponent();
-	if (OwnerRoot && OwnerRoot->Mobility != EComponentMobility::Movable)
-	{
-		Result.Message = FString::Printf(TEXT("Owner '%s' root component is not Movable, so its transform cannot change at runtime. Set its Mobility to Movable."), *Owner->GetName());
-		return Result;
-	}
-
 	const FTransform OldTransform = Owner->GetActorTransform();
 	const FTransform NewTransform(NewRot, NewLoc, Owner->GetActorScale3D());
-	Owner->SetActorTransform(NewTransform, false, nullptr, ETeleportType::TeleportPhysics);
 
-	// Read back right away: did the engine really move the actor?
-	const FTransform Applied = Owner->GetActorTransform();
-	if ((Applied.GetLocation() - NewLoc).Size() > 1.0 || Applied.GetRotation().AngularDistance(NewRot) > FMath::DegreesToRadians(0.5))
+	FString ApplyError;
+	if (!ApplyOwnerTransform(NewTransform, TEXT("Calibration"), ApplyError))
 	{
-		Result.Message = FString::Printf(TEXT("SetActorTransform did not take effect on '%s' (wanted location %s, got %s)."),
-			*Owner->GetName(), *NewLoc.ToString(), *Applied.GetLocation().ToString());
+		Result.Message = ApplyError;
 		return Result;
 	}
-
-	PreviousTransform = OldTransform;
-	bHasPreviousTransform = true;
-	UE_LOG(LogVRPNCalibration, Log, TEXT("Owner '%s' moved: location %s -> %s"), *Owner->GetName(), *OldTransform.GetLocation().ToString(), *NewLoc.ToString());
 
 	Result.NewOwnerTransform = NewTransform;
 	Result.YawDeltaDegrees = FMath::UnwindDegrees(NewRot.Rotator().Yaw - OldTransform.GetRotation().Rotator().Yaw);
@@ -457,6 +520,7 @@ FVRPNCalibrationResult UVRPNCalibrationComponent::ComputeAndApply(const TArray<F
 		Result.OriginResidual, Result.AxisResidual,
 		bUseThirdPoint ? *FString::Printf(TEXT(", third %.2f"), Result.ThirdResidual) : TEXT(""),
 		Result.YawDeltaDegrees, *NewLoc.ToString());
+	Result.Message += PublishToClients(NewTransform);
 	return Result;
 }
 
@@ -488,13 +552,8 @@ void UVRPNCalibrationComponent::FinishWith(const FVRPNCalibrationResult& Result)
 		GEngine->AddOnScreenDebugMessage(-1, 6.0f, Result.bSuccess ? FColor::Green : FColor::Red, Result.Message);
 	}
 
-	if (Result.bSuccess)
-	{
-		// Check a few frames later that nothing (e.g. the owner's own Tick) wrote the old transform back.
-		VerifyExpectedTransform = Result.NewOwnerTransform;
-		VerifyTicksRemaining = 3;
-		SetComponentTickEnabled(true);
-	}
+	// Note: the delayed "was it overwritten a few frames later?" check is scheduled inside
+	// ApplyOwnerTransform itself (shared with the Nudge functions), not here.
 
 	OnCalibrationFinished.Broadcast(Result);
 }
@@ -527,6 +586,274 @@ void UVRPNCalibrationComponent::VerifyOwnerTransform()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Orange, Message);
 	}
+}
+
+bool UVRPNCalibrationComponent::ApplyOwnerTransform(const FTransform& NewTransform, const TCHAR* LogContext, FString& OutError)
+{
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		OutError = TEXT("Component has no owner.");
+		return false;
+	}
+
+	const USceneComponent* OwnerRoot = Owner->GetRootComponent();
+	if (OwnerRoot && OwnerRoot->Mobility != EComponentMobility::Movable)
+	{
+		OutError = FString::Printf(TEXT("Owner '%s' root component is not Movable, so its transform cannot change at runtime. Set its Mobility to Movable."), *Owner->GetName());
+		return false;
+	}
+
+	const FTransform OldTransform = Owner->GetActorTransform();
+	Owner->SetActorTransform(NewTransform, false, nullptr, ETeleportType::TeleportPhysics);
+
+	// Read back right away: did the engine really move the actor?
+	const FTransform Applied = Owner->GetActorTransform();
+	if ((Applied.GetLocation() - NewTransform.GetLocation()).Size() > 1.0 || Applied.GetRotation().AngularDistance(NewTransform.GetRotation()) > FMath::DegreesToRadians(0.5))
+	{
+		OutError = FString::Printf(TEXT("[%s] SetActorTransform did not take effect on '%s' (wanted location %s, got %s)."),
+			LogContext, *Owner->GetName(), *NewTransform.GetLocation().ToString(), *Applied.GetLocation().ToString());
+		return false;
+	}
+
+	PreviousTransform = OldTransform;
+	bHasPreviousTransform = true;
+	UE_LOG(LogVRPNCalibration, Log, TEXT("[%s] Owner '%s' moved: location %s -> %s"), LogContext, *Owner->GetName(), *OldTransform.GetLocation().ToString(), *NewTransform.GetLocation().ToString());
+
+	// Check a few frames later that nothing (e.g. the owner's own Tick) wrote the old transform back.
+	VerifyExpectedTransform = NewTransform;
+	VerifyTicksRemaining = 3;
+	SetComponentTickEnabled(true);
+
+	return true;
+}
+
+AActor* UVRPNCalibrationComponent::GetPivotMarker() const
+{
+	return PivotMarkerOverride ? PivotMarkerOverride.Get() : OriginMarker.Get();
+}
+
+// ---------------------------------------------------------------------------------------------
+// Nudge (press-and-hold fine adjustment after calibration)
+// ---------------------------------------------------------------------------------------------
+
+bool UVRPNCalibrationComponent::IsAnyNudgeHeld() const
+{
+	return bHoldMoveForward || bHoldMoveBack || bHoldMoveLeft || bHoldMoveRight
+		|| bHoldMoveUp || bHoldMoveDown || bHoldRotateCW || bHoldRotateCCW;
+}
+
+void UVRPNCalibrationComponent::ClearAllNudgeHolds()
+{
+	bHoldMoveForward = bHoldMoveBack = bHoldMoveLeft = bHoldMoveRight = bHoldMoveUp = bHoldMoveDown = bHoldRotateCW = bHoldRotateCCW = false;
+}
+
+void UVRPNCalibrationComponent::BeginContinuousNudge()
+{
+	// Captured once per press-and-hold gesture (not every tick), so UndoLastCalibration() undoes the
+	// whole gesture, not just its last ~16 ms.
+	if (AActor* Owner = GetOwner())
+	{
+		PreviousTransform = Owner->GetActorTransform();
+		bHasPreviousTransform = true;
+	}
+	SetComponentTickEnabled(true);
+}
+
+void UVRPNCalibrationComponent::EndContinuousNudge()
+{
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		return;
+	}
+
+	const FTransform Current = Owner->GetActorTransform();
+	const FString Note = PublishToClients(Current);
+	if (bAutoSaveAfterNudge)
+	{
+		SaveCalibration();
+	}
+	if (bShowOnScreenMessage && GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Silver, FString::Printf(
+			TEXT("Nudge: location %s, yaw %.2f deg%s"), *Current.GetLocation().ToString(), Current.GetRotation().Rotator().Yaw, *Note));
+	}
+
+	// Check a few frames later that nothing (e.g. the owner's own Tick) wrote the old transform back.
+	VerifyExpectedTransform = Current;
+	VerifyTicksRemaining = 3;
+	SetComponentTickEnabled(true);
+}
+
+void UVRPNCalibrationComponent::TickContinuousNudge(float DeltaTime)
+{
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		return;
+	}
+
+	const USceneComponent* OwnerRoot = Owner->GetRootComponent();
+	if (OwnerRoot && OwnerRoot->Mobility != EComponentMobility::Movable)
+	{
+		const FString Error = FString::Printf(TEXT("Owner '%s' root component is not Movable, so its transform cannot change at runtime. Set its Mobility to Movable."), *Owner->GetName());
+		UE_LOG(LogVRPNCalibration, Warning, TEXT("%s"), *Error);
+		if (bShowOnScreenMessage && GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Red, Error);
+		}
+		ClearAllNudgeHolds();
+		return;
+	}
+
+	if (!Owner->HasAuthority())
+	{
+		// Client: must not drift its own copy away from the master. Stop quietly; the master's
+		// result arrives through replication instead.
+		ClearAllNudgeHolds();
+		return;
+	}
+
+	const double MoveDelta = MoveSpeed * DeltaTime;
+	const double YawDeltaDeg = RotateSpeedDegrees * DeltaTime * ((bHoldRotateCW ? 1.0 : 0.0) - (bHoldRotateCCW ? 1.0 : 0.0));
+
+	// Fixed world X/Y/Z axes, not the calibrated/local ones.
+	const FVector WorldDelta(
+		MoveDelta * ((bHoldMoveForward ? 1.0 : 0.0) - (bHoldMoveBack ? 1.0 : 0.0)),
+		MoveDelta * ((bHoldMoveRight ? 1.0 : 0.0) - (bHoldMoveLeft ? 1.0 : 0.0)),
+		MoveDelta * ((bHoldMoveUp ? 1.0 : 0.0) - (bHoldMoveDown ? 1.0 : 0.0)));
+
+	const FTransform Old = Owner->GetActorTransform();
+	FVector NewLoc = Old.GetLocation() + WorldDelta;
+	FQuat NewRot = Old.GetRotation();
+
+	if (YawDeltaDeg != 0.0)
+	{
+		// Live current world position, not a frozen snapshot, so the pivot tracks the marker if it moves.
+		const AActor* Pivot = GetPivotMarker();
+		const FVector PivotWorld = Pivot ? Pivot->GetActorLocation() : Old.GetLocation();
+		const FQuat DeltaRot(FVector::UpVector, FMath::DegreesToRadians(YawDeltaDeg));
+		NewRot = (DeltaRot * Old.GetRotation()).GetNormalized();
+		// Keep the pivot's world position fixed under the rotation: NewLoc = Pivot + R*(OldLoc - Pivot).
+		NewLoc = PivotWorld + DeltaRot.RotateVector(NewLoc - PivotWorld);
+	}
+
+	// Quiet apply: this runs every frame while a key is held, so (unlike ApplyOwnerTransform) it skips
+	// the readback/log/replicate/save work - those happen once in EndContinuousNudge when all keys are released.
+	Owner->SetActorTransform(FTransform(NewRot, NewLoc, Old.GetScale3D()), false, nullptr, ETeleportType::TeleportPhysics);
+}
+
+void UVRPNCalibrationComponent::NudgeMoveForwardPressed()
+{
+	if (bCalibrating) { return; }
+	const bool bWasIdle = !IsAnyNudgeHeld();
+	bHoldMoveForward = true;
+	if (bWasIdle) { BeginContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveForwardReleased()
+{
+	bHoldMoveForward = false;
+	if (!IsAnyNudgeHeld()) { EndContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveBackPressed()
+{
+	if (bCalibrating) { return; }
+	const bool bWasIdle = !IsAnyNudgeHeld();
+	bHoldMoveBack = true;
+	if (bWasIdle) { BeginContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveBackReleased()
+{
+	bHoldMoveBack = false;
+	if (!IsAnyNudgeHeld()) { EndContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveLeftPressed()
+{
+	if (bCalibrating) { return; }
+	const bool bWasIdle = !IsAnyNudgeHeld();
+	bHoldMoveLeft = true;
+	if (bWasIdle) { BeginContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveLeftReleased()
+{
+	bHoldMoveLeft = false;
+	if (!IsAnyNudgeHeld()) { EndContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveRightPressed()
+{
+	if (bCalibrating) { return; }
+	const bool bWasIdle = !IsAnyNudgeHeld();
+	bHoldMoveRight = true;
+	if (bWasIdle) { BeginContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveRightReleased()
+{
+	bHoldMoveRight = false;
+	if (!IsAnyNudgeHeld()) { EndContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveUpPressed()
+{
+	if (bCalibrating) { return; }
+	const bool bWasIdle = !IsAnyNudgeHeld();
+	bHoldMoveUp = true;
+	if (bWasIdle) { BeginContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveUpReleased()
+{
+	bHoldMoveUp = false;
+	if (!IsAnyNudgeHeld()) { EndContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveDownPressed()
+{
+	if (bCalibrating) { return; }
+	const bool bWasIdle = !IsAnyNudgeHeld();
+	bHoldMoveDown = true;
+	if (bWasIdle) { BeginContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeMoveDownReleased()
+{
+	bHoldMoveDown = false;
+	if (!IsAnyNudgeHeld()) { EndContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeRotateCWPressed()
+{
+	if (bCalibrating) { return; }
+	const bool bWasIdle = !IsAnyNudgeHeld();
+	bHoldRotateCW = true;
+	if (bWasIdle) { BeginContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeRotateCWReleased()
+{
+	bHoldRotateCW = false;
+	if (!IsAnyNudgeHeld()) { EndContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeRotateCCWPressed()
+{
+	if (bCalibrating) { return; }
+	const bool bWasIdle = !IsAnyNudgeHeld();
+	bHoldRotateCCW = true;
+	if (bWasIdle) { BeginContinuousNudge(); }
+}
+
+void UVRPNCalibrationComponent::NudgeRotateCCWReleased()
+{
+	bHoldRotateCCW = false;
+	if (!IsAnyNudgeHeld()) { EndContinuousNudge(); }
 }
 
 bool UVRPNCalibrationComponent::UndoLastCalibration()
@@ -599,7 +926,9 @@ bool UVRPNCalibrationComponent::LoadCalibration()
 
 	PreviousTransform = Owner->GetActorTransform();
 	bHasPreviousTransform = true;
-	Owner->SetActorTransform(FTransform(Q, L, Owner->GetActorScale3D()), false, nullptr, ETeleportType::TeleportPhysics);
+	const FTransform Loaded(Q, L, Owner->GetActorScale3D());
+	Owner->SetActorTransform(Loaded, false, nullptr, ETeleportType::TeleportPhysics);
+	PublishToClients(Loaded);
 
 	UE_LOG(LogVRPNCalibration, Log, TEXT("Loaded calibration from %s (location %s)"), *GetSavePath(), *L.ToString());
 	return true;
