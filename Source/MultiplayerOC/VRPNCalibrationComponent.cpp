@@ -934,6 +934,50 @@ bool UVRPNCalibrationComponent::LoadCalibration()
 	return true;
 }
 
+void UVRPNCalibrationComponent::ApplyCalibrationInEditor()
+{
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		UE_LOG(LogVRPNCalibration, Warning, TEXT("ApplyCalibrationInEditor: component has no owner."));
+		return;
+	}
+
+	FString Text;
+	if (!FFileHelper::LoadFileToString(Text, *GetSavePath()))
+	{
+		UE_LOG(LogVRPNCalibration, Warning, TEXT("ApplyCalibrationInEditor: no saved calibration at %s"), *GetSavePath());
+		return;
+	}
+
+	TArray<FString> Tokens;
+	Text.ParseIntoArrayWS(Tokens);
+	if (Tokens.Num() != 7)
+	{
+		UE_LOG(LogVRPNCalibration, Warning, TEXT("ApplyCalibrationInEditor: saved calibration file is malformed: %s"), *GetSavePath());
+		return;
+	}
+
+	const FVector L(FCString::Atod(*Tokens[0]), FCString::Atod(*Tokens[1]), FCString::Atod(*Tokens[2]));
+	FQuat Q(FCString::Atod(*Tokens[3]), FCString::Atod(*Tokens[4]), FCString::Atod(*Tokens[5]), FCString::Atod(*Tokens[6]));
+	Q.Normalize();
+
+	// Routed through Modify()/MarkPackageDirty() (not SetActorTransform's own PublishToClients/network
+	// path - there's no meaningful network context in Edit mode) so native Editor Undo (Ctrl+Z) works
+	// and the level shows it needs saving.
+	Owner->Modify();
+	Owner->SetActorTransform(FTransform(Q, L, Owner->GetActorScale3D()), false, nullptr, ETeleportType::TeleportPhysics);
+	Owner->MarkPackageDirty();
+
+	const FString Message = FString::Printf(TEXT("Applied saved calibration from %s to '%s' (location %s). Save the level (Ctrl+S) to keep it."),
+		*GetSavePath(), *Owner->GetName(), *L.ToString());
+	UE_LOG(LogVRPNCalibration, Log, TEXT("%s"), *Message);
+	if (bShowOnScreenMessage && GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Cyan, Message);
+	}
+}
+
 float UVRPNCalibrationComponent::GetProgress() const
 {
 	if (!bCalibrating || SampleDuration <= KINDA_SMALL_NUMBER)

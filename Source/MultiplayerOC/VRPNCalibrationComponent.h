@@ -262,6 +262,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "VRPN Calibration")
 	bool LoadCalibration();
 
+	/**
+	 * Editor-only convenience: applies the saved calibration (Saved/<SaveFileName>) directly to this
+	 * actor in the level, without needing to press Play. PIE is transient - stopping Play reverts the
+	 * actor to whatever was placed in the level, it does NOT write the calibrated result back - so use
+	 * this button afterwards, then save the level (Ctrl+S), to make the placed actor match permanently.
+	 * Shows up as a button in the Details panel.
+	 */
+	UFUNCTION(CallInEditor, Category = "VRPN Calibration|Persistence")
+	void ApplyCalibrationInEditor();
+
 	// ---- Nudge: press-and-hold fine adjustment after calibration. Bind each pair to an input action's
 	// Pressed/Released execution pins (e.g. on the PlayerController/input Blueprint, not on BP_VRPNTransform
 	// itself). Movement is along fixed WORLD axes (X=Forward/Back, Y=Right/Left, Z=Up/Down); rotation is
