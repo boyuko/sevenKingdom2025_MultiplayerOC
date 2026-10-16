@@ -1,0 +1,15 @@
+Begin Object Class=/Script/Engine.TextureRenderTarget2D Name="RT_SampleMEshPos" ExportPath="/Script/Engine.TextureRenderTarget2D'/Game/Texture/RenderTexture/RT_SampleMEshPos.RT_SampleMEshPos'"
+   Begin Object Class=/Script/Engine.AssetImportData Name="AssetImportData" ExportPath="/Script/Engine.AssetImportData'/Game/Texture/RenderTexture/RT_SampleMEshPos.RT_SampleMEshPos:AssetImportData'"
+   End Object
+   Begin Object Name="AssetImportData" ExportPath="/Script/Engine.AssetImportData'/Game/Texture/RenderTexture/RT_SampleMEshPos.RT_SampleMEshPos:AssetImportData'"
+   End Object
+   SizeX=1024
+   SizeY=1024
+   RenderTargetFormat=RTF_RGBA32f
+   Source=(BlockDataOffsets=(0))
+   LightingGuid=AA236B294CA53F73DC9E4E91A237D33B
+   AssetImportData="/Script/Engine.AssetImportData'AssetImportData'"
+   OodleTextureSdkVersion="2.9.12"
+   SRGB=False
+   CustomProperties TextureSourceData PayloadSize=0 
+End Object
