@@ -16,3 +16,16 @@ Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Debris_Concrete
 Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Debris_Concrete_M_05/SM_Ind_Rubble_Pile_Debris_Concrete_M_05.uasset filter=lfs diff=lfs merge=lfs -text
 Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Ware_Storage_Pallet_Wood_Worn_01/SM_Ind_Ware_Storage_Pallet_Wood_Worn_01.uasset filter=lfs diff=lfs merge=lfs -text
 Content/Objects/Scene2StaticMesh.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Concrete_M_01/T_Ind_Rubble_Pile_Concrete_M_01_B.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Concrete_M_01/T_Ind_Rubble_Pile_Concrete_M_01_N.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Concrete_M_01/T_Ind_Rubble_Pile_Concrete_M_01_ORM.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Concrete_M_02/SM_Ind_Rubble_Pile_Concrete_M_02.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Concrete_M_02/T_Ind_Rubble_Pile_Concrete_M_02_B.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Concrete_M_02/T_Ind_Rubble_Pile_Concrete_M_02_N.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Concrete_M_02/T_Ind_Rubble_Pile_Concrete_M_02_ORM.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Debris_Concrete_M_01/SM_Ind_Rubble_Pile_Debris_Concrete_M_01.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Res_Furn_Chair_Metal_Armless_01/T_Res_Furn_Chair_Metal_Armless_01_B.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Res_Furn_Chair_Metal_Armless_01/T_Res_Furn_Chair_Metal_Armless_01_N.uasset filter=lfs diff=lfs merge=lfs -text
+Content/DerelictCorridor/Assets/Fab/Megascans/3D/Res_Furn_Chair_Metal_Armless_01/T_Res_Furn_Chair_Metal_Armless_01_ORM.uasset filter=lfs diff=lfs merge=lfs -text
+ 
+
