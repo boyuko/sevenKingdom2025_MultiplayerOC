@@ -27,5 +27,4 @@ Content/DerelictCorridor/Assets/Fab/Megascans/3D/Ind_Rubble_Pile_Debris_Concrete
 Content/DerelictCorridor/Assets/Fab/Megascans/3D/Res_Furn_Chair_Metal_Armless_01/T_Res_Furn_Chair_Metal_Armless_01_B.uasset filter=lfs diff=lfs merge=lfs -text
 Content/DerelictCorridor/Assets/Fab/Megascans/3D/Res_Furn_Chair_Metal_Armless_01/T_Res_Furn_Chair_Metal_Armless_01_N.uasset filter=lfs diff=lfs merge=lfs -text
 Content/DerelictCorridor/Assets/Fab/Megascans/3D/Res_Furn_Chair_Metal_Armless_01/T_Res_Furn_Chair_Metal_Armless_01_ORM.uasset filter=lfs diff=lfs merge=lfs -text
- 
-
+Content/Objects/SM_Scene2StaticMesh1124.uasset filter=lfs diff=lfs merge=lfs -text
